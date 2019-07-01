@@ -8,19 +8,8 @@
 import re
 from mylib.redis_my import MyRedis
 
-my = MyRedis()
-while True:
-    url = my.r.lpop("vietnam_news_vtv_content").decode('utf8')
-    # print()
-    # https = re.findall("http", url)
-    # if len(https) > 1:
-    #     url = url[14:]
 
-    # if not any([item in url for item in ['jpg', 'png', 'jpeg']]):
-    #     my.r.rpush("vietnam_news_vtv_content", url)
-    if not url.startswith("http"):
-        new_url = url.split("source_url=")[-1]
-        print(new_url)
-        my.r.rpush("vietnam_news_vtv_content_new", new_url)
-    else:
-        my.r.rpush("vietnam_news_vtv_content", url)
+"https://vnexpress.net/thoi-su"
+"https://vnexpress.net/kinh-doanh"
+"https://vnexpress.net/the-thao"
+"https://vnexpress.net/giai-tri"

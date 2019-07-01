@@ -18,7 +18,7 @@ from collections import defaultdict
 
 class NewProcess(object):
     def __init__(self):
-        self.sentence_limit_length = (3, 120)
+        self.sentence_limit_length = (10, 26)
         self.result = []
         self.word = defaultdict(int)
         self.legal_char = set()
@@ -41,7 +41,7 @@ class NewProcess(object):
             get data in the form of a generator, each element containing the number of data see mysql_my,py
         :return: generator
         """
-        sql = "select content from spiderframe.vietnam_speaking_sentence where 170000<id;"
+        sql = 'select content from spiderframe.vietnam_news_vn_content where url like "%thoi-su%";'
         my_mysql = MySql()
         data = my_mysql.get_many(sql)
         return data
@@ -151,8 +151,8 @@ class NewProcess(object):
                         sentence = self.deal_with_by_author(sentence)
                         sentence_len = self.sentence_length(sentence)
                         if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
-                            self.result.append(sentence)
-                            file = r"C:\Users\Administrator\Desktop\vietnam_speaking_sentence.txt"
+                            # self.result.append(sentence)
+                            file = r"vietnam_news_vn.txt"
                             with open(file, 'a', encoding='utf8')as f:
                                 f.write(sentence + '\n')
 
@@ -176,22 +176,22 @@ class NewProcess(object):
                            "íóốớúứýÁẮẤÉẾÍÓỐỚÚỨÝảẳẩẻểỉỏổởủửỷẢẲẨẺỂỈỎỔỞỦỬỶãẵẫẽễĩõỗỡũüữỹÃẴẪẼỄĨÕỖỠŨỮỸạặậẹệịọộợụự" \
                            "ỵẠẶẬẸỆỊỌỘỢỤỰỴÞðśłΚäöÐïøñ"
         self.legal_char = set(vietnam_charater)
-        # data = self.read_data()
-        # self.deal_with_data(data)
+        data = self.read_data()
+        self.deal_with_data(data)
         # self.save_txt(file, self.result)
 
-        with open(r"C:\Users\Administrator\Desktop\temp.txt", 'r', encoding='utf8') as sentences:
-            for sentence in sentences:
-                sentence = self.deal_content(sentence)
-                sentence = sentence.strip()
-                sentence = self.deal_with_sentence(sentence)
-                sentence = self.deal_with_by_author(sentence)
-                sentence_len = self.sentence_length(sentence)
-                if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
-                    self.result.append(sentence)
-                    file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
-                    with open(file, 'a', encoding='utf8')as f:
-                        f.write(sentence + '\n')
+        # with open(r"C:\Users\Administrator\Desktop\temp.txt", 'r', encoding='utf8') as sentences:
+        #     for sentence in sentences:
+        #         sentence = self.deal_content(sentence)
+        #         sentence = sentence.strip()
+        #         sentence = self.deal_with_sentence(sentence)
+        #         sentence = self.deal_with_by_author(sentence)
+        #         sentence_len = self.sentence_length(sentence)
+        #         if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
+        #             self.result.append(sentence)
+        #             file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
+        #             with open(file, 'a', encoding='utf8')as f:
+        #                 f.write(sentence + '\n')
 
 
 if __name__ == '__main__':
