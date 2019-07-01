@@ -22,6 +22,7 @@ class NewProcess(object):
         self.result = []
         self.word = defaultdict(int)
         self.legal_char = set()
+        self.elem_type = set(["thoi-su", "kinh-doanh", "the-thao", "giai-tri"])
 
     def read_execl(self, file):
         """ 读execl"""
@@ -41,7 +42,7 @@ class NewProcess(object):
             get data in the form of a generator, each element containing the number of data see mysql_my,py
         :return: generator
         """
-        sql = 'select content from spiderframe.vietnam_news_vn_content where url like "%thoi-su%";'
+        sql = 'select url, content from spiderframe.vietnam_news_vn_content;'
         my_mysql = MySql()
         data = my_mysql.get_many(sql)
         return data
@@ -141,20 +142,23 @@ class NewProcess(object):
     def deal_with_data(self, data):
         for batch in data:
             for element in batch:
-                news_content = element[0]
-                news_content = news_content.strip()
-                if news_content:
-                    content_new = self.deal_content(news_content)
-                    sentences = self.split_sentence(content_new)
-                    for sentence in sentences:
-                        sentence = self.deal_with_sentence(sentence)
-                        sentence = self.deal_with_by_author(sentence)
-                        sentence_len = self.sentence_length(sentence)
-                        if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
-                            # self.result.append(sentence)
-                            file = r"vietnam_news_vn.txt"
-                            with open(file, 'a', encoding='utf8')as f:
-                                f.write(sentence + '\n')
+                url = element[0]
+                element_type = url.split("/")[3]
+                if element_type in self.elem_type:
+                    news_content = element[1]
+                    news_content = news_content.strip()
+                    if news_content:
+                        content_new = self.deal_content(news_content)
+                        sentences = self.split_sentence(content_new)
+                        for sentence in sentences:
+                            sentence = self.deal_with_sentence(sentence)
+                            sentence = self.deal_with_by_author(sentence)
+                            sentence_len = self.sentence_length(sentence)
+                            if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
+                                # self.result.append(sentence)
+                                file = r"vietnam_news_vn.txt"
+                                with open(file, 'a', encoding='utf8')as f:
+                                    f.write(sentence + '\n')
 
     def save_txt(self, file, result):
         with open(file, 'a', encoding='utf8')as f:
