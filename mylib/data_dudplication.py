@@ -45,42 +45,48 @@ class DataDeduplication(object):
     def run(self):
         """ 主逻辑控制"""
         # 新抓的批数据
-        file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
+        file = r"C:\Users\Administrator\Desktop\English_ted_speech.txt"
         data = self.read_data(file)
         data = self.remove_same(data)
-        print('新数据条数：', len(data))
 
         # show data
 
         # #前一批数据
-        # data_two = []
+        data_two = []
+
+        # 文件夹中是execl 打开这个
         # folder = r"C:\Users\Administrator\Desktop\vietnamese"
         # for file_a in os.listdir(folder):
         #     file_name = os.path.join(folder, file_a)
         #     data_ = self.read_execl(file_name)
         #     data_two.extend(data_)
-        # print('前批数据条数：', len(data_two))
 
+        # 文件夹中是txt 打开这个
+        folder = r"C:\Users\Administrator\Desktop\temp"
+        for file_a in os.listdir(folder):
+            file_name = os.path.join(folder, file_a)
+            print(file_name)
+            old_data = self.read_data(file_name)
+            data_two.extend(old_data)
+
+        # 以前数据只有一个文件，打开这个
         # old_file = r"C:\Users\Administrator\Desktop\vietnam_speaking_sentence_new.txt"
         # old_data = self.read_data(old_file)
         # old_data = self.remove_same(old_data)
         # data_two.extend(old_data)
         # print('前数据条数：', len(data_two))
 
-        # folder = r"C:\Users\Administrator\Desktop\vietnam_speaking"
-        # for file_a in os.listdir(folder):
-        #     file_name = os.path.join(folder, file_a)
-        #     old_data = self.read_data(file_name)
-        #     data_two.extend(old_data)
+        # 与前一批数据去重后的新数据
 
-        #与前一批数据去重后的新数据
-        # new_data = list(set(data) - set(data_two))
-        # print('去重后数据条数：', len(new_data))
+        new_data = list(set(data) - set(data_two))
+        print('新数据条数：', len(data))
+        print('前批数据条数：', len(data_two))
+        print('去重后数据条数：', len(new_data))
 
         # #存储去重后数据
         new_data = data
         new = NewProcess()
-        new.save_txt(r"C:\Users\Administrator\Desktop\vietnam_speaking_sentence.txt", new_data)
+        new.save_txt(r"C:\Users\Administrator\Desktop\ted_speech_sentence.txt", new_data)
         char_sum = sum([len(item.split()) for item in new_data])
         print("平均句子长度", char_sum / len(new_data))
 

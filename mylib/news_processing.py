@@ -42,7 +42,7 @@ class NewProcess(object):
             get data in the form of a generator, each element containing the number of data see mysql_my,py
         :return: generator
         """
-        sql = 'select url, content from spiderframe.vietnam_news_vn_content;'
+        sql = 'select url, content from spiderframe.vietnam_news_vn_content where 300000<id < 400000;'
         my_mysql = MySql()
         data = my_mysql.get_many(sql)
         return data
@@ -143,7 +143,11 @@ class NewProcess(object):
         for batch in data:
             for element in batch:
                 url = element[0]
-                element_type = url.split("/")[3]
+                try:
+                    element_type = url.split("/")[3]
+                except:
+                    element_type = ""
+
                 if element_type in self.elem_type:
                     news_content = element[1]
                     news_content = news_content.strip()
@@ -156,7 +160,7 @@ class NewProcess(object):
                             sentence_len = self.sentence_length(sentence)
                             if self.sentence_limit_length[0] <= sentence_len < self.sentence_limit_length[1]:
                                 # self.result.append(sentence)
-                                file = r"vietnam_news_vn.txt"
+                                file = r"C:\Users\Administrator\Desktop\vietnam_news_vn.txt"
                                 with open(file, 'a', encoding='utf8')as f:
                                     f.write(sentence + '\n')
 
