@@ -45,7 +45,7 @@ class DataDeduplication(object):
     def run(self):
         """ 主逻辑控制"""
         # 新抓的批数据
-        file = r"C:\Users\Administrator\Desktop\English_ted_speech.txt"
+        file = r"C:\Users\Administrator\Desktop\vietnam_news_content.txt"
         data = self.read_data(file)
         data = self.remove_same(data)
 
@@ -55,19 +55,19 @@ class DataDeduplication(object):
         data_two = []
 
         # 文件夹中是execl 打开这个
-        # folder = r"C:\Users\Administrator\Desktop\vietnamese"
-        # for file_a in os.listdir(folder):
-        #     file_name = os.path.join(folder, file_a)
-        #     data_ = self.read_execl(file_name)
-        #     data_two.extend(data_)
-
-        # 文件夹中是txt 打开这个
-        folder = r"C:\Users\Administrator\Desktop\temp"
+        folder = r"C:\Users\Administrator\Desktop\Viet-news"
         for file_a in os.listdir(folder):
             file_name = os.path.join(folder, file_a)
-            print(file_name)
-            old_data = self.read_data(file_name)
-            data_two.extend(old_data)
+            data_ = self.read_execl(file_name)
+            data_two.extend(data_)
+
+        # 文件夹中是txt 打开这个
+        # folder = r"C:\Users\Administrator\Desktop\temp"
+        # for file_a in os.listdir(folder):
+        #     file_name = os.path.join(folder, file_a)
+        #     print(file_name)
+        #     old_data = self.read_data(file_name)
+        #     data_two.extend(old_data)
 
         # 以前数据只有一个文件，打开这个
         # old_file = r"C:\Users\Administrator\Desktop\vietnam_speaking_sentence_new.txt"
@@ -86,9 +86,9 @@ class DataDeduplication(object):
         # #存储去重后数据
         new_data = data
         new = NewProcess()
-        new.save_txt(r"C:\Users\Administrator\Desktop\ted_speech_sentence.txt", new_data)
-        char_sum = sum([len(item.split()) for item in new_data])
-        print("平均句子长度", char_sum / len(new_data))
+        new.save_txt(r"C:\Users\Administrator\Desktop\vietnam_news_sentence.txt", new_data)
+        # char_sum = sum([len(item.split()) for item in new_data])
+        # print("平均句子长度", char_sum / len(new_data))
 
 
 #

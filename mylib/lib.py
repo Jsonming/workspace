@@ -65,6 +65,16 @@ def split_content(content):
     return sentences
 
 
+# 汉语切分句子
+def chinese_sent(para):
+    para = re.sub('([。！？\?])([^”’])', r"\1\n\2", para)
+    para = re.sub('(\.{6})([^”’])', r"\1\n\2", para)
+    para = re.sub('(\…{2})([^”’])', r"\1\n\2", para)
+    para = re.sub('([。！？\?][”’])([^，。！？\?])', r'\1\n\2', para)
+    para = para.rstrip()
+    return [item.strip() for item in para.split("\n")]
+
+
 def delete_special_characters(sentence):
     """
         替换句子中的特殊字符

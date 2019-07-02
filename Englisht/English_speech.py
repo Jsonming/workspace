@@ -41,25 +41,21 @@ class EnglishSpeech(object):
 
     def run(self):
         """ 程序主要逻辑控制"""
-        sql = "select content from spiderframe.English_speaking_ted_content;"
+        sql = "select content from spiderframe.English_speaking_ted_content where id<10;"
         gen_data = self.read_data(sql)
         for batch in gen_data:
             for line in batch:
                 content = line[0]
                 if content:
-                    try:
-                        text = self.process_content(content)
-                        sentences = split_content(text)
-                    except:
-                        print(content)
-                    else:
-                        for sentence in sentences:
-                            sentence = delete_special_characters(sentence)
-                            if contain_number(sentence):
-                                sentence = ""
-                            if 8 <= sentence_length(sentence) <= 16:
-                                with open('English_ted_speech.txt', 'a', encoding="utf8") as f:
-                                    f.write(sentence + "\n")
+                    text = self.process_content(content)
+                    sentences = split_content(text)
+                    for sentence in sentences:
+                        sentence = delete_special_characters(sentence)
+                        if contain_number(sentence):
+                            sentence = ""
+                        if 8 < sentence_length(sentence) < 18:
+                            with open('English_ted_speech.txt', 'a', encoding="utf8") as f:
+                                f.write(sentence + "\n")
 
 
 if __name__ == '__main__':
