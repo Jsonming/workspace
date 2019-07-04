@@ -7,10 +7,16 @@
 # @Software: PyCharm
 import re
 from mylib.language_identification import recognition_language
+from pymongo import MongoClient
+from polyglot.text import Text
 
 
 class DataClean(object):
     def __init__(self):
+
+        self.conn = MongoClient('47.105.132.57', 27017)
+        self.db = self.conn.vietnam
+
         self.pattern_url = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
         self.pattern_url_two = re.compile(r'www\.(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
@@ -37,6 +43,12 @@ class DataClean(object):
         with open(file, 'r', encoding='utf8')as f:
             for line in f:
                 yield line
+
+    def read_data(self):
+        """
+            读取mongo数据库中数据，库已经写死，集合写死以后再改
+        :return:
+        """
 
     def clean_url(self, content):
         """
@@ -90,6 +102,26 @@ class DataClean(object):
         s = self.replaceCharEntity(s)  # 替换实体
         return s
 
+    def delete_brackets_content(self, content):
+        """
+            删除括号中内容
+        :param content:
+        :return:
+        """
+        pattern_brackets = re.compile("\\（.*?）|\\{.*?}|\\[.*?]|\\【.*?】|\\(.*?\\)|<.*?>|«.*?»", re.S)
+        content = re.sub(pattern_brackets, '', content)
+        return content.strip()
+
+    def delete_brackets(self, content):
+        """
+            删除括号（小括号,大括号,中括号，花括号）
+        :param content:
+        :return:
+        """
+        pattern_brackets = re.compile(r"""\(|\)|{|}|<|>|\[|\]|（|）|"|【|】|『|』|«|»""")
+        content = re.sub(pattern_brackets, '', content)
+        return content.strip()
+
     def clean_special_character(self, content):
         """
             清除特殊字符
@@ -104,7 +136,9 @@ class DataClean(object):
         :param content:
         :return:
         """
-        word = ['Login', 'download', 'registry']
+        word = ['Login', 'download', 'registry', 'push', 'Tháng', 'XEM', "VTV.vn", "GMT+7", "init", "undefined",
+                "VideoTopNewsDetail", "if"]
+
         patt_word = "(" + "|".join(word) + ")"
         return re.sub(patt_word, '', content)
 
@@ -136,26 +170,51 @@ class DataClean(object):
         :param contetn:
         :return:
         """
+        text = []
+        sentences = Text(content).sentences
+        sentences = [item.string for item in sentences]
+        for sentence in sentences:
+            language = recognition_language(sentence)
+            if language == "越南语":
+                text.append(sentence)
+        if len(text) > 5:
+            return ' '.join(text)
+        else:
+            return ''
+
     def clean_blank(self, content):
         return re.sub('[\s]+', ' ', content)
+
+    def cleam_you(self, content):
+        """
+            自定义 处理字符
+        :param content:
+        :return:
+        """
+        cont = content.replace(";", '')
+        return cont
 
     def run(self):
         """数据清洗控制逻辑"""
         # 需要清洗的文件 file
-        file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
-        new_file = r"C:\Users\Administrator\Desktop\temp.txt"
-        data = self.read_file_data(file)
-        for line in data:
-            content = self.clean_url(line.strip())
+        # file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
+        # new_file = r"C:\Users\Administrator\Desktop\temp.txt"
+        # data = self.read_data()
+
+        collection = self.db.vietnam_news_vn_content
+        for item in collection.find():
+            content = item.get("content")
+            content = self.clean_url(content.strip())
             content = self.clean_html(content)
             content = self.clean_special_character(content)
+            content = self.delete_brackets_content(content)
+            content = self.delete_brackets(content)
             content = self.clean_word(content)
+            content = self.cleam_you(content)
             content = self.clean_blank(content)
-            content = self.clean_code(content)
             content = content.strip()
-            if recognition_language(content) == "越南语":
-                with open(new_file, 'a', encoding='utf8')as ff:
-                    ff.write(content + "\n")
+            with open(r"C:\Users\Administrator\Desktop\vn.txt", 'a', encoding='utf8') as f:
+                f.write(content + "\n")
 
 
 if __name__ == '__main__':

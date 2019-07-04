@@ -5,67 +5,69 @@
 # @Site    : 
 # @File    : temp.py
 # @Software: PyCharm
+# coding=utf-8
+# import pymongo, time, requests, json, os
+# import urllib.parse
+import redis, pexpect
+# def app_mongo():
+#     mon = pymongo.MongoClient("mongodb://integrate:" + urllib.parse.quote_plus(
+#         "integ_190228_snv738v8220aiVK9V820@_eate") + "@172.26.26.132:20388/integrate")
+#     return mon
+# mon_app = app_mongo()
+# def mongodb():
+#     mongo = pymongo.MongoClient(
+#         "mongodb://xhql:" + urllib.parse.quote_plus(
+#             "xhql_190228_snv738J72*fjVNv8220aiVK9V820@_") + "@172.26.26.132:20388/webpage")['webpage']
+#     return mongo
+# mongo = mongodb()
+# def Baike():
+#     webnum = mongo.baike_details.find({'state_qiu': 0}).count()
+#     print(webnum)
+#     filetime = time.strftime("%Y%m%d", time.localtime())
+#     filename = 'inc_baike_{}.dat'.format(filetime)
+#     filename = 'inc_baike_20190423.dat'
+    # f = open(r'/mnt/data/liqiu/baike/{}'.format(filename), 'a', encoding='utf-8')
+    # for i in range(0, webnum, 10000):
+    #     print('*****************************************', i)
+    #     filetime = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+    #     filename = 'full_{}.dat'.format(filetime)
+    #     f = open(r'/mnt/data/liqiu/{}'.format(filename),'a',encoding='utf-8')
+        # zds = mongo.baike_details.find({'state_qiu': 0}).limit(10000).skip(i)
+        # for one in zds:
+        #     try:
+        #         liqiu_dict = {'id': str(one['id']), 'link': str(one['id']), 'title': str(one['title']),
+        #                       'author': str(one['author']), 'content': str(one['content_np']),
+        #                       'site_name': str(one['site_name']), 'article_url': str(one['article_url']),
+        #                       'crawl_time': str(one['crawl_time']), 'source': str(one['source']), 'topic': '',
+        #                       'flag': '0'}
+        #         if one.get('type', []) and isinstance(one['type'], list):
+        #             liqiu_dict['type'] = ' '.join(one['type'])
+        #         elif one.get('type', '') and isinstance(one['type'], str):
+        #             liqiu_dict['type'] = one['type']
+        #         else:
+        #             liqiu_dict['type'] = ''
+        #             if one.get('label', []) and isinstance(one['label'], list):
+        #                 liqiu_dict['label'] = ' '.join(one['label'])
+        #             elif one.get('label', "") and isinstance(one['label'], str):
+        #                 liqiu_dict['label'] = one['label']
+        #             else:
+        #                 liqiu_dict['label'] = ''
+                    # if len(liqiu_dict)==0:
+                    #     continue
+                    # cons = liqiu_dict['content']
+                    # url = 'http://172.26.26.135:8995/topic?content={}'.format(cons)
+                    # ai = requests.get(url).text
+                    # print(ai)
+                    # if ai == 'AI':
+                    #     ai = 'ai'
+                    # else:
+                    #     ai = ''
+                    # liqiu_dict['topic'] = ai
+                    #
+                    # read_dat(liqiu_dict)
+                    # f.write('{}\n'.format(json.dumps(liqiu_dict, ensure_ascii=False)))
+                #
+                # except KeyError as e:
 
-
-# -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-from pymongo import MongoClient
-import urllib.parse, pyssdb, hashlib, redis
-from .items import ZhihuseedsItem, ZhihuItem
-
-
-class ZhihuPipeline(object):
-    def process_item(self, item, spider):
-        return item
-
-
-class MongodbPipeline(object):
-    def __init__(self):
-        # 创建数据库连接
-        pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=4)
-        self.c = redis.Redis(connection_pool=pool)
-        self.client = MongoClient("127.0.0.1:27017")
-        # self.client = MongoClient("mongodb://xhql:" + urllib.parse.quote_plus("xhql_190228_snv738J72*fjVNv8220aiVK9V820@_")+"@127.0.0.1:27017/webpage")
-
-    def process_item(self, item, spider):
-        # 将数据写入数据库
-        if isinstance(item, ZhihuItem):
-            print('将数据写入数据库')
-            # print(item)
-            # item_label={}
-            # item_label['id']=item['id']
-            # item_label['content']=item['label_list']
-            # item_label['source']='zhihu'
-            # item_label['state']=0
-            # item={'id': 'b7ff60fbd406805d06d5a7febc2814f2', 'title': '田村'}
-            # self.client.webpage.label.update({'id': item['id']}, item_label, True)
-
-            self.client.webpage.zhihu_details.update({'segment_id': item['segment_id']}, item, True)
-            # return item
-        if isinstance(item, ZhihuseedsItem):
-            print('种子', item)
-            list1 = item['url']
-            for k in list1:
-                url_hash = self.md5_(k)
-                sta = self.hash_exist(url_hash)
-                # sta1=sta.decode('utf-8')
-                if sta == False:
-                    print('url', k)
-                    self.c.lpush('zhihu_seeds', k)
-                    self.hash_(url_hash)
-
-    def md5_(self, str):
-        md5 = hashlib.md5()
-        data = str
-        md5.update(data.encode('utf-8'))
-        return md5.hexdigest()
-
-    def hash_(self, str):
-        return self.c.hset("zhihu_fingerprint", str, 1)
-
-    def hash_exist(self, str):
-        return self.c.hexists('zhihu_fingerprint', str)
+                # print('异常')
+                # print('---------------------------', e)

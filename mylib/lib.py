@@ -71,7 +71,7 @@ def chinese_sent(para):
     para = re.sub('(\.{6})([^”’])', r"\1\n\2", para)
     para = re.sub('(\…{2})([^”’])', r"\1\n\2", para)
     para = re.sub('([。！？\?][”’])([^，。！？\?])', r'\1\n\2', para)
-    para = para.rstrip()
+    para = para.strip()
     return [item.strip() for item in para.split("\n")]
 
 
@@ -102,3 +102,14 @@ def sentence_length(sentence):
     :return:
     """
     return len(sentence.split())
+
+
+def count_chinese_length(sentence):
+    """
+        统计中文字符个数
+    :param sentence:
+    :return:
+    """
+    filtate = re.compile('[^\u4E00-\u9FA5]')
+    filtered_str = filtate.sub(r'', sentence)
+    return len(filtered_str)

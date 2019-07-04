@@ -33,11 +33,9 @@ class ChineseNews(object):
         content = delete_extra_spaces(content)
         return content
 
-
-
     def run(self):
         """ 程序主要逻辑控制"""
-        sql = "select content from spiderframe.china_news_people_content where id < 20;"
+        sql = "select content from spiderframe.china_news_people_content;"
         gen_data = self.read_data(sql)
         for batch in gen_data:
             for line in batch:
@@ -45,18 +43,9 @@ class ChineseNews(object):
 
                 sentences = chinese_sent(content)
                 for sentence in sentences:
-                    print(repr(sentence))
-                # text = self.process_content(content)
-                # if text:
-                #     try:
-                #         sentences = split_content(text)
-                #     except:
-                #         print(text)
-                #     else:
-                #         for sentence in sentences:
-                #             sentence = delete_special_characters(sentence)
-                #             print(sentence)
-                # print(repr(text))
+                    if 15 <= count_chinese_length(sentence) <= 20:
+                        with open(r"C:\Users\Administrator\Desktop\china_news.txt", 'a', encoding='utf8')as f:
+                            f.write(sentence.strip() + "\n")
 
 
 if __name__ == '__main__':
