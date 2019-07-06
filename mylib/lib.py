@@ -6,6 +6,8 @@
 # @File    : lib.py
 # @Software: PyCharm
 import re
+import shutil
+import os
 from polyglot.text import Text
 
 
@@ -113,3 +115,47 @@ def count_chinese_length(sentence):
     filtate = re.compile('[^\u4E00-\u9FA5]')
     filtered_str = filtate.sub(r'', sentence)
     return len(filtered_str)
+
+
+# 文件操作
+def list_file(folder):
+    """
+        get all file
+    :param folder:
+    :return:
+    """
+    file_list = []
+    files = os.listdir(folder)
+    for file in files:
+        file_name = os.path.join(folder + "\\" + file)
+        if os.path.isdir(file_name):
+            file_list.extend(list_file(file_name))
+        else:
+            file_list.append(file_name)
+    return file_list
+
+
+def move_file(old_folder, new_folder):
+    """
+        move all file in old_folder to new_folder
+    :param old_folder:
+    :param new_folder:
+    :return:
+    """
+    file_list = list_file(old_folder)
+    if not os.path.exists(new_folder):
+        os.mkdir(new_folder)
+
+    for file in file_list:
+        shutil.move(file, new_folder)
+
+
+def read_file(file):
+    """
+        读取文件
+    :param file:
+    :return:
+    """
+    with open(file, 'r', encoding='utf8') as f:
+        data = f.readlines()
+    return [item.strip() for item in data]
