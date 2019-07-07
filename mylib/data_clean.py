@@ -138,8 +138,14 @@ class DataClean(object):
         """
         word = ['Login', 'download', 'registry', 'push', 'Tháng', 'XEM', "VTV.vn", "GMT+7", "init", "undefined",
                 "VideoTopNewsDetail", "if"]
+        news_word = ['break', 'else', 'new', 'var', 'case', 'finally', 'return', 'void', 'catch', 'for', 'switch',
+                     'while', 'continue', 'function', 'this', 'with', 'default', 'if', 'throw', 'delete', 'in', 'try',
+                     'do', 'instranceof', 'typeof', 'abstract', 'enum', 'int', 'short', 'boolean', 'export',
+                     'interface', 'static', 'byte', 'extends', 'long', 'super', 'char', 'final', 'native',
+                     'synchronized', 'class', 'float', 'package', 'throws', 'const', 'goto', 'private', 'transient',
+                     'debugger', 'implements', 'protected', 'volatile', 'double', 'import', 'public']
 
-        patt_word = "(" + "|".join(word) + ")"
+        patt_word = "(" + "|".join(word + news_word) + ")"
         return re.sub(patt_word, '', content)
 
     def clean_code(self, content):
@@ -192,29 +198,35 @@ class DataClean(object):
         :return:
         """
         cont = content.replace(";", '')
+        cont = re.sub('\d\s\d', '', cont)
+        cont = re.sub('\.\.\.', '', cont)
         return cont
 
     def run(self):
         """数据清洗控制逻辑"""
-        # 需要清洗的文件 file
-        # file = r"C:\Users\Administrator\Desktop\vietnam_speaking.txt"
-        # new_file = r"C:\Users\Administrator\Desktop\temp.txt"
-        # data = self.read_data()
+        # # 读取数据库
+        # collection = self.db.vietnam_news_vn_content
+        # for item in collection.find():
+        #     content = item.get("content")
+        #     content = self.clean_url(content.strip())
+        #     content = self.clean_html(content)
+        #     content = self.clean_special_character(content)
+        #     content = self.delete_brackets_content(content)
+        #     content = self.delete_brackets(content)
+        #     content = self.clean_word(content)
+        #     content = self.cleam_you(content)
+        #     content = self.clean_blank(content)
+        #     content = content.strip()
+        #     with open(r"C:\Users\Administrator\Desktop\vn.txt", 'a', encoding='utf8') as f:
+        #         f.write(content + "\n")
 
-        collection = self.db.vietnam_news_vn_content
-        for item in collection.find():
-            content = item.get("content")
-            content = self.clean_url(content.strip())
-            content = self.clean_html(content)
-            content = self.clean_special_character(content)
-            content = self.delete_brackets_content(content)
-            content = self.delete_brackets(content)
-            content = self.clean_word(content)
-            content = self.cleam_you(content)
-            content = self.clean_blank(content)
-            content = content.strip()
-            with open(r"C:\Users\Administrator\Desktop\vn.txt", 'a', encoding='utf8') as f:
-                f.write(content + "\n")
+        # 需要清洗的文件 file
+        input_file = r"C:\Users\Administrator\Desktop\www.vnexpress.net.txt"
+        output_file = r"C:\Users\Administrator\Desktop\vietnam_news\www.vnexpress.net.txt"
+        with open(input_file, 'r', encoding='utf8') as f, open(output_file, 'w', encoding='utf8') as ff:
+            for line in f:
+                line = self.cleam_you(line)
+                ff.write(line)
 
 
 if __name__ == '__main__':

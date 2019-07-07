@@ -7,9 +7,8 @@
 # @Software: PyCharm
 import pandas as pd
 import numpy as np
-from mylib.txt_to_execl import save_txt
-import os
 from mylib.news_processing import NewProcess
+from mylib.lib import gen_md5
 
 
 class DataDeduplication(object):
@@ -45,7 +44,7 @@ class DataDeduplication(object):
     def run(self):
         """ 主逻辑控制"""
         # 新抓的批数据
-        file = r"C:\Users\Administrator\Desktop\vietnam_news_content.txt"
+        file = r"C:\Users\Administrator\Desktop\vietnam\新闻\thannien.vn.txt"
         data = self.read_data(file)
         data = self.remove_same(data)
 
@@ -55,12 +54,12 @@ class DataDeduplication(object):
         data_two = []
 
         # 文件夹中是execl 打开这个
-        folder = r"C:\Users\Administrator\Desktop\Viet-news"
-        for file_a in os.listdir(folder):
-            file_name = os.path.join(folder, file_a)
-            data_ = self.read_execl(file_name)
-            data_two.extend(data_)
-
+        # folder = r"C:\Users\Administrator\Desktop\Viet-news"
+        # for file_a in os.listdir(folder):
+        #     file_name = os.path.join(folder, file_a)
+        #     data_ = self.read_execl(file_name)
+        #     data_two.extend(data_)
+        #
         # 文件夹中是txt 打开这个
         # folder = r"C:\Users\Administrator\Desktop\temp"
         # for file_a in os.listdir(folder):
@@ -86,13 +85,27 @@ class DataDeduplication(object):
         # #存储去重后数据
         new_data = data
         new = NewProcess()
-        new.save_txt(r"C:\Users\Administrator\Desktop\vietnam_news_sentence.txt", new_data)
+        new.save_txt(r"C:\Users\Administrator\Desktop\vietnam_news\kenh14.vn.txt", new_data)
         # char_sum = sum([len(item.split()) for item in new_data])
         # print("平均句子长度", char_sum / len(new_data))
 
+    def file_remove_same(self):
+        """
+            run 函数应对数据量级比较小的去重，大数量级去重应该使用此方法
+        :return:
+        """
+        finger_print = set()
+        input_file = r"C:\Users\Administrator\Desktop\vietnam\新闻\www.vnexpress.net.txt"
+        output_file = r"C:\Users\Administrator\Desktop\vietnam_news\www.vnexpress.net.txt"
+        with open(input_file, 'r', encoding='utf8') as f, open(output_file, 'w', encoding='utf8') as ff:
+            for line in f:
+                line_string = line.strip()
+                finger = gen_md5(line_string)
+                if finger not in finger_print:
+                    finger_print.add(finger)
+                    ff.write(line)
 
-#
 
 if __name__ == '__main__':
     dd = DataDeduplication()
-    dd.run()
+    dd.file_remove_same()

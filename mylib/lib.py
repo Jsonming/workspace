@@ -8,6 +8,7 @@
 import re
 import shutil
 import os
+import hashlib
 from polyglot.text import Text
 
 
@@ -159,3 +160,60 @@ def read_file(file):
     with open(file, 'r', encoding='utf8') as f:
         data = f.readlines()
     return [item.strip() for item in data]
+
+
+# 工具性
+def gen_md5(data):
+    """
+        生成md5
+    :param data: 字符串数据
+    :return:
+    """
+    md5 = hashlib.md5()
+    md5.update(data.encode('utf-8'))
+    return md5.hexdigest()
+
+
+def remove_same(data):
+    """
+        去重，对于数量级小的的数据进行去重
+    :param data:
+    :return:
+    """
+    return list(set(data))
+
+
+def file_remove_same(input_file, output_file):
+    """
+        针对小文件去重
+    :param input_file: 输入文件
+    :param out_file: 去重后出文件
+    :return:
+    """
+    with open(input_file, 'r', encoding='utf8') as f, open(output_file, 'a', encoding='utf8') as ff:
+        data = [item.strip() for item in f.readlines()]  # 针对最后一行没有换行符，与其他它行重复的情况
+        new_data = list(set(data))
+        ff.writelines([item + '\n' for item in new_data if item])  # 针对去除文件中有多行空行的情况
+
+
+def big_file_remove_same(input_file, output_file):
+    """
+        针对大文件文件去重（将文件文件写在一行的，没有办法去重）
+    :param input_file:
+    :param output_file:
+    :return:
+    """
+    finger_print_set = set()
+    with open(input_file, 'r', encoding='utf8') as f, open(output_file, 'w', encoding='utf8') as ff:
+        for line in f:
+            line_string = line.strip()
+            finger_print = gen_md5(line_string)
+            if finger_print not in finger_print_set:
+                finger_print_set.add(finger_print)
+                ff.write(line)
+
+
+if __name__ == '__main__':
+    input_file = r"C:\Users\Administrator\Desktop\aaa.txt"
+    output_file = r"C:\Users\Administrator\Desktop\bbb.txt"
+    big_file_remove_same(input_file, output_file)
