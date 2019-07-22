@@ -8,6 +8,7 @@
 
 from mylib.lib import *
 from workspace.mylib.mysql_my import MySql
+import re
 
 
 class ChineseNews(object):
@@ -47,7 +48,38 @@ class ChineseNews(object):
                         with open(r"C:\Users\Administrator\Desktop\china_news.txt", 'a', encoding='utf8')as f:
                             f.write(sentence.strip() + "\n")
 
+    def deal_char(self, sentence):
+        """
+            删除掉含有不合法字符的句子
+        :param sentence:
+        :return:
+        """
+        leg_char = set(["。", "！", "？", "：", "，", "“", "”", "、"])
+        if "_" in sentence:
+            sentence = ""
+        illeg_char = re.findall("\W", sentence)
+        il_set = set(illeg_char)
+        if il_set - leg_char:
+            sentence = ""
+        return sentence
+
+    def deal_sentence(self):
+        """
+            处理中文句子
+        :param sentence:
+        :return:
+        """
+        sql = "select sentence from spiderframe.china_news_people_sentence;"
+        data = self.read_data(sql)
+        for s in data:
+            for line in s:
+                sentence = line[0].strip()
+                sentence = self.deal_char(sentence)
+                if sentence:
+                    with open(r"C:\Users\Administrator\Desktop\china_news_sentence.txt", 'a', encoding='utf8') as f:
+                        f.write(sentence + "\n")
+
 
 if __name__ == '__main__':
     cn = ChineseNews()
-    cn.run()
+    cn.deal_sentence()
