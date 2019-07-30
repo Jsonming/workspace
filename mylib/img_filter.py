@@ -9,11 +9,9 @@ import os
 import shutil
 import time
 import matplotlib.pyplot as plt
-# from PIL import Image
+from PIL import Image
 import cv2 as cv
-
-
-# from .move_file import list_file
+import pandas as pd
 
 
 def list_file(folder):
@@ -33,11 +31,8 @@ def list_file(folder):
     return file_list
 
 
-def imgage_filter(img_path):
-    # img = Image.open(img_path)
-    # plt.imshow(img)
-    # plt.show()
-    """ 图片打开时间设置为10秒"""
+def imgage_filter(img_path, to_folder):
+    """ 图片打开时间设置为10秒, 移动至temp文件下按“0”键，按其他键查看下一张图片"""
     try:
         src = cv.imread(img_path)
         cv.namedWindow('input_image', cv.WINDOW_AUTOSIZE)
@@ -47,22 +42,41 @@ def imgage_filter(img_path):
     except:
         key = 0
         print(img_path)
+
     if key == 48:
-        print(img_path)
-        temp = img_path.split('\\')
-        temp[-2] = "temp"
-        temp_folder = '\\'.join(temp[:-1])
+        temp_folder = to_folder
         if not os.path.exists(temp_folder):
             os.makedirs(temp_folder)
         shutil.move(img_path, temp_folder)
 
 
-def run():
-    folder = r"C:\Users\Administrator\Desktop\test"
+def pixel_count(folder):
+    """
+        像素统计
+    :param img_path: 图片路径
+    :return:
+    """
     files = list_file(folder)
-    print("移动至temp文件下按“0”键，按其他键查看下一张图片")
+    h, w = [], []
     for file in files:
-        imgage_filter(file)
+        try:
+            imgage = cv.imread(file)
+            height, width, *_ = imgage.shape
+        except:
+            print(file)
+        else:
+            h.append(height)
+            w.append(width)
+    df = pd.DataFrame({'height': h, 'width': w})
+    pixel = df.apply(lambda x: x[0] * x[1], axis=1).sort_values()
+    print(pixel.describe())
+
+
+def run():
+    folder = r"C:\Users\Administrator\Desktop\image\image\abnormal\car_chehuo"
+    # to_folder = r"C:\Users\Administrator\Desktop\temp"
+    # folder = r"C:\Users\Administrator\Desktop\temp"
+    pixel_count(folder)
 
 
 if __name__ == '__main__':
