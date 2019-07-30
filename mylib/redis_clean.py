@@ -8,9 +8,18 @@
 import re
 from mylib.redis_my import MyRedis
 
-my = MyRedis()
-for i in range(200):
-    url = my.r.lpop("vietnam_news_vtv_content").decode("utf8")
-    if "video"not in url:
-        print(url)
-        my.r.rpush("vietnam_news_vtv_content", url)
+
+def run():
+    my = MyRedis()
+    urls = []
+    for i in range(4558):
+        url = my.r.lpop("video_bilibili_link").decode("utf8")
+        new_url = url.split("?")[0]
+        urls.append(new_url)
+    url_list = list(set(urls))
+    for n_url in url_list:
+        my.r.lpush("video_bilibili_link", n_url)
+
+
+if __name__ == '__main__':
+    run()

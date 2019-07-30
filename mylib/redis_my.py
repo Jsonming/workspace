@@ -11,7 +11,7 @@ import redis
 
 class MyRedis(object):
     def __init__(self):
-        pool = redis.ConnectionPool(host='47.105.132.57', port=6379, db=0, password='')
+        pool = redis.ConnectionPool(host='123.56.11.156', port=6379, db=0, password='')
         self.r = redis.Redis(connection_pool=pool)
 
     def generate_md5(self, str):
