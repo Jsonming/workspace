@@ -136,7 +136,7 @@ def list_file(folder):
     return file_list
 
 
-def move_file(old_folder, new_folder):
+def move_all_file(old_folder, new_folder):
     """
         move all file in old_folder to new_folder
     :param old_folder:
@@ -149,6 +149,18 @@ def move_file(old_folder, new_folder):
 
     for file in file_list:
         shutil.move(file, new_folder)
+
+
+def move_file(file, new_folder):
+    """
+        move all file in old_folder to new_folder
+    :param old_folder:
+    :param new_folder:
+    :return:
+    """
+    if not os.path.exists(new_folder):
+        os.mkdir(new_folder)
+    shutil.move(file, new_folder)
 
 
 def read_file(file):
