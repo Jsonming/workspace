@@ -14,15 +14,19 @@ from mylib.lib import list_file, move_file
 
 class MovieSameRemove(object):
     """
-        各种方法检查视频是否重复
+        各种方法检查视频是否重复，
     """
 
     def __init__(self):
         self.folder = r"C:\Users\Administrator\Desktop\remove"  # 文件夹
 
     def judge_by_name(self):
-        first_folder = r"C:\Users\Administrator\Desktop\remove"
-        second_folder = r"C:\Users\Administrator\Desktop\new"
+        """
+            利用
+        :return:
+        """
+        first_folder = r"I:\work\OCR\vietnam\1"
+        second_folder = r"I:\work\OCR\vietnam\5"
 
         old_files = os.listdir(first_folder)
         new_files = os.listdir(second_folder)
@@ -47,4 +51,4 @@ class MovieSameRemove(object):
 
 if __name__ == '__main__':
     msr = MovieSameRemove()
-    msr.judge_by_size()
+    msr.judge_by_name()

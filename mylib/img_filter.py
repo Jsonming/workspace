@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import cv2 as cv
 import pandas as pd
+from mylib.lib import move_file
 
 
 def list_file(folder):
@@ -72,11 +73,30 @@ def pixel_count(folder):
     print(pixel.describe())
 
 
+def pixel_filter(source_path, tmp_dir_image):
+    """
+        根据图片分辨率筛选图片，将不合格的图片文件移动到tmp_dir_image
+    :param source_path:源文件
+    :param tmp_dir_image:不合格的文件路径
+    :return:None
+    """
+    files = list_file(source_path)
+    for file in files:
+        imgage = cv.imread(file)
+        height, width, *_ = imgage.shape
+        if height < 512 or width < 512:
+            move_file(file, tmp_dir_image)
+
+
 def run():
-    folder = r"C:\Users\Administrator\Desktop\image\image\abnormal\car_chehuo"
+    # folder = r"C:\Users\Administrator\Desktop\image\image\abnormal\car_chehuo"
     # to_folder = r"C:\Users\Administrator\Desktop\temp"
     # folder = r"C:\Users\Administrator\Desktop\temp"
-    pixel_count(folder)
+    # pixel_count(folder)
+
+    source_path = r"I:\work\OCR\vietnam\2"
+    tmp_dir_image = r"C:\Users\Administrator\Desktop\tmp"
+    pixel_filter(source_path, tmp_dir_image)
 
 
 if __name__ == '__main__':
