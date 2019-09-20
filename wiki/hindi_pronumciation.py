@@ -44,17 +44,18 @@ class DemoSpider(object):
         html = etree.HTML(self.resp)
         IPA_table_row = html.xpath('//table[@rules="all"]/tbody/tr')
         with open('hindi_pronumciation.txt', 'a', encoding='utf8') as f:
-            for row in IPA_table_row:
-                th = row.xpath('./th//text()')
-                td = row.xpath('./td')
-                if td:
-                    td_one = ''.join(td[0].xpath('.//text()')).strip()
-                    td_two = ''.join(td[1].xpath('.//text()')).strip()
-                    td_three = ''.join(td[2].xpath('.//text()')).strip()
-                    td_four = ''.join(td[3].xpath('.//text()')).strip()
-                    f.write("    ".join((td_one, td_two, td_three, td_four, '\n')))
-                else:
-                    f.write("    ".join(th))
+            # for row in IPA_table_row:
+            #     th = row.xpath('./th//text()')
+            #     td = row.xpath('./td')
+            #     if td:
+            #         td_one = ''.join(td[0].xpath('.//text()')).strip()
+            #         td_two = ''.join(td[1].xpath('.//text()')).strip()
+            #         td_three = ''.join(td[2].xpath('.//text()')).strip()
+            #         td_four = ''.join(td[3].xpath('.//text()')).strip()
+            #         f.write("    ".join((td_one, td_two, td_three, td_four, '\n')))
+            #     else:
+            #         f.write("    ".join(th))
+            f.write(self.resp)
 
     def save(self, result):
         with open(r'C:\Users\Administrator\Desktop\name.txt', 'a', encoding='utf-8')as f:
