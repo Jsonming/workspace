@@ -42,7 +42,7 @@ class DemoSpider(object):
 
         html = etree.HTML(self.resp)
         IPA_table_row = html.xpath('//table[@class="IPA wikitable"]/tbody/tr')
-        with open('hindi_and_urdu.txt', 'a', encoding='utf8') as f:
+        with open('hindi_and_urdu.html', 'a', encoding='utf8') as f:
             # td_three_mark = None
             # for row in IPA_table_row:
             #     th = row.xpath('./th//text()')

@@ -43,7 +43,7 @@ class DemoSpider(object):
 
         html = etree.HTML(self.resp)
         IPA_table_row = html.xpath('//table[@rules="all"]/tbody/tr')
-        with open('hindi_pronumciation.txt', 'a', encoding='utf8') as f:
+        with open('hindi_pronumciation.html', 'a', encoding='utf8') as f:
             # for row in IPA_table_row:
             #     th = row.xpath('./th//text()')
             #     td = row.xpath('./td')
