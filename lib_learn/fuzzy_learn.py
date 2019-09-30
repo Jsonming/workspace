@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2019/6/12 10:10
+# @Time    : 2019/9/30 10:48
 # @Author  : yangmingming
 # @Site    : 
-# @File    : __init__.py.py
+# @File    : fuzzy_learn.py
 # @Software: PyCharm
