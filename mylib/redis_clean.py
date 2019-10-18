@@ -12,13 +12,13 @@ from mylib.redis_my import MyRedis
 def run():
     my = MyRedis()
     urls = []
-    for i in range(4558):
-        url = my.r.lpop("video_bilibili_link").decode("utf8")
-        new_url = url.split("?")[0]
-        urls.append(new_url)
-    url_list = list(set(urls))
-    for n_url in url_list:
-        my.r.lpush("video_bilibili_link", n_url)
+    for i in range(10000):
+        url = my.r.lpop("hebrew_walla_link").decode("utf8")
+
+        if "category" not in url:
+            my.r.rpush("hebrew_walla_link", url)
+        else:
+            print(url)
 
 
 if __name__ == '__main__':
