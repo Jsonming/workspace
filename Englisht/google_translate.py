@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2019/10/11 15:02
+# @Time    : 2019/10/21 18:20
 # @Author  : yangmingming
 # @Site    : 
-# @File    : temp.py
+# @File    : google_translate.py
 # @Software: PyCharm
+
 
 import requests
 import re
-import pprint
 import json
-from lxml import etree
+from spiderframe.script.google_translate_js import Py4Js
 
 
 class DemoSpider(object):
@@ -18,7 +18,12 @@ class DemoSpider(object):
         self.resp = None
 
     def crawl(self, off_number=None):
-        url = "https://celebs.walla.co.il/item/3314302"
+        keyword = "you"
+        pj = Py4Js()
+        tk = pj.get_tk(keyword)
+        url = "https://translate.google.cn/translate_a/single?client=webapp&sl=auto&tl=zh-CN&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=1&ssel=0&tsel=0&kc=3&tk={tk}&q={keyword}".format(
+            **locals())
+
         querystring = {"delivery_city_slug": "ramsey-ny-restaurants", "store_only": "true", "limit": "50",
                        "offset": off_number}
         payload = ""
@@ -28,24 +33,14 @@ class DemoSpider(object):
             'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
         }
         response = requests.request("GET", url, data=payload, headers=headers)
-        response = requests.request("POST", url, data=payload, headers=headers)
         self.resp = response.text
 
     def parser(self):
-        # 将处理和去重的逻辑都放在这
-        # names = []
-        # response = json.loads(self.resp)
-        # stores = response.get("stores")
-        # for store in stores:
-        #     store_name = store.get("business").get("name")
-        #     names.append(store_name)
-        #
-        # html = etree.HTML(self.resp)
-        # names = html.xpath()
-        # pprint.pprint(names)
-        # print(self.resp)
-        with open('temp.html', 'w', encoding='utf8')as f:
-            f.write(self.resp)
+        print(self.resp)
+        dr = re.compile(r'<[^>]+>', re.S)
+        response = json.loads(self.resp)[-1][0]
+        for sentence in response:
+            print(dr.sub('', sentence[0]))
 
     def save(self, result):
         with open(r'C:\Users\Administrator\Desktop\name.txt', 'a', encoding='utf-8')as f:
@@ -59,3 +54,4 @@ class DemoSpider(object):
 if __name__ == '__main__':
     demo = DemoSpider()
     demo.run()
+
