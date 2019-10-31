@@ -8,7 +8,7 @@
 
 import pymysql.cursors
 
-LIMIT_NUMBER = 100
+LIMIT_NUMBER = 2
 
 
 class MySql(object):
@@ -16,13 +16,13 @@ class MySql(object):
     def __init__(self):
         # 连mysql接数据库
         self.connect = pymysql.connect(
-            host='127.0.0.1',
-            user='root',
-            passwd='Yang_123_456',
+            # host='127.0.0.1',
+            # user='root',
+            # passwd='Yang_123_456',
 
-            # host='123.56.11.156',
-            # user='sjtUser',
-            # passwd='sjtUser!1234',
+            host='123.56.11.156',
+            user='sjtUser',
+            passwd='sjtUser!1234',
 
             db='spiderframe',
             port=3306,

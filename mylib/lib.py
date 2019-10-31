@@ -12,6 +12,15 @@ import hashlib
 from polyglot.text import Text
 
 
+def delete_url_link(content):
+    pattern_url = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    pattern_url_two = re.compile(r'www\.(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+    content = re.sub(pattern_url, ' ', content)
+    content = re.sub(pattern_url_two, ' ', content)
+    return content
+
+
 def delete_brackets_content(content):
     """
         删除括号中内容
