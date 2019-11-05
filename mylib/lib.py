@@ -28,7 +28,7 @@ def delete_brackets_content(content):
     :return:
     """
     pattern_brackets = re.compile("\\（.*?）|\\{.*?}|\\[.*?]|\\【.*?】|\\(.*?\\)|<.*?>|«.*?»", re.S)
-    content = re.sub(pattern_brackets, '', content)
+    content = re.sub(pattern_brackets, ' ', content)
     return content.strip()
 
 
@@ -39,7 +39,7 @@ def delete_brackets(content):
     :return:
     """
     pattern_brackets = re.compile(r"""\(|\)|{|}|<|>|\[|\]|（|）|"|【|】|『|』|«|»""")
-    content = re.sub(pattern_brackets, '', content)
+    content = re.sub(pattern_brackets, ' ', content)
     return content.strip()
 
 
@@ -77,8 +77,28 @@ def split_content(content):
     return sentences
 
 
-# 汉语切分句子
+def split_content_custom(content):
+    """
+        自定义句子切分
+    :param content:
+    :return:
+    """
+    start = 0
+    sentences = []
+    split_char = {'.', '?', "!"}
+    for i, char in enumerate(content):
+        if char in split_char:
+            sentences.append(content[start:i + 1])
+            start = i + 1
+    return sentences
+
+
 def chinese_sent(para):
+    """
+        汉语切分句子
+    :param para:
+    :return:
+    """
     para = re.sub('([。！？\?])([^”’])', r"\1\n\2", para)
     para = re.sub('(\.{6})([^”’])', r"\1\n\2", para)
     para = re.sub('(\…{2})([^”’])', r"\1\n\2", para)
@@ -94,10 +114,13 @@ def delete_special_characters(sentence):
     :param sep:
     :return:
     """
-    pattern = re.compile("♪|=|※|●|■|~|▶|▲|▼|☞|►|▷|◇|○|Ⓞ|°|¤|▫|#|◆|⚽|♬|[①②③④⑤⑥⑦⑧]+|×|™|@|▻|"
-                         "～|⁺|⋆|℃|℉|□|ʹ|•|▪|✔|♫", re.S)  # TODO 特殊字符集还需添加
-    _sentence = re.sub(pattern, '', sentence)
-    return _sentence.strip()
+    err_symbol = set()
+    with open('../mylib/err_symbol.txt', 'r', encoding='utf8') as f:
+        content = f.read()
+        err_symbol = set(content.split('\n'))
+
+    _sent = ''.join([item if item not in err_symbol else ' ' for item in sentence])
+    return delete_extra_spaces(_sent)
 
 
 def contain_number(sentence):
