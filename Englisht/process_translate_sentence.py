@@ -76,6 +76,18 @@ class ProcessTranslateSentence(object):
             去重
         :return:
         """
+        mr = MyRedis()
+
+        remove_before_file = "not_contain_num.txt"
+        remove_after_file = "simple_sentence.txt"
+
+        with open(remove_before_file, 'r', encoding='utf8')as f, open(remove_after_file, 'a', encoding='utf8') as new_f:
+            for line in f:
+                sentence = line.strip()
+                fingerprint = mr.generate_md5(sentence)
+                if not mr.hash_exist(fingerprint):
+                    mr.hash_(fingerprint)
+                    # new_f.write(sentence + "\n")
 
     def output_new_sentence(self):
         """
@@ -86,4 +98,4 @@ class ProcessTranslateSentence(object):
 
 if __name__ == '__main__':
     pts = ProcessTranslateSentence()
-    pts.process_new_sentence()
+    pts.remove_repeat_sentence()
