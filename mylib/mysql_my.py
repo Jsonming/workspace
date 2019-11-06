@@ -6,6 +6,7 @@
 # @File    : mysql_my.py
 # @Software: PyCharm
 
+from pymysql.cursors import SSCursor
 import pymysql.cursors
 
 LIMIT_NUMBER = 2
@@ -29,7 +30,7 @@ class MySql(object):
             charset='utf8',
             use_unicode=True)
         # 通过cursor执行增删查改
-        self.cursor = self.connect.cursor()
+        self.cursor = self.connect.cursor(cursor=SSCursor)
 
     def get_many(self, sql):
         self.cursor.execute(sql)

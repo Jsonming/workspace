@@ -6,3 +6,6 @@
 # @File    : nltk.py
 # @Software: PyCharm
 
+import nltk
+
+nltk.download()
