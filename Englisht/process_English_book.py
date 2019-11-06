@@ -10,6 +10,7 @@ from mylib.lib import delete_url_link, delete_brackets_content, delete_brackets,
 from mylib.lib import delete_special_characters, contain_number, sentence_length, delete_extra_spaces
 from mylib.lib import split_content_custom
 from mylib.lib import split_content
+from nltk.tokenize import sent_tokenize
 from mylib.mysql_my import MySql
 
 
@@ -35,7 +36,6 @@ class ProcessEnglish(object):
         return all(word_flag)
 
     def process_data(self):
-        temp = 0
         for batch in self.read_data():
             for row in batch:
                 content = row[0]
@@ -46,15 +46,14 @@ class ProcessEnglish(object):
                 content = delete_extra_spaces(content)
                 content = delete_special_characters(content)
 
-                sentences = split_content(content)
+                sentences = sent_tokenize(content)
                 for sentence in sentences:
                     sentence_len = sentence_length(sentence)
-                    temp += 1
                     if 5 <= sentence_len <= 15:
                         if not contain_number(sentence):
                             if self.contain_word(sentence):
                                 print(sentence)
-        print(temp)
+
 
 
 if __name__ == '__main__':
