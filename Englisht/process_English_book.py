@@ -5,7 +5,9 @@
 # @Site    : 
 # @File    : process_English.py
 # @Software: PyCharm
+import sys
 
+sys.path.append("..")
 import nltk
 from nltk.tokenize import sent_tokenize
 
