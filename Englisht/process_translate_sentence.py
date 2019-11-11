@@ -78,16 +78,18 @@ class ProcessTranslateSentence(object):
         """
         mr = MyRedis()
 
-        remove_before_file = "not_contain_num.txt"
-        remove_after_file = "simple_sentence.txt"
+        remove_before_file = "temp.txt"
+        remove_after_file = "ebook_sentence_new.txt"
 
         with open(remove_before_file, 'r', encoding='utf8')as f, open(remove_after_file, 'a', encoding='utf8') as new_f:
             for line in f:
                 sentence = line.strip()
                 fingerprint = mr.generate_md5(sentence)
                 if not mr.hash_exist(fingerprint):
+                    new_f.write(sentence + "\n")
                     mr.hash_(fingerprint)
-                    # new_f.write(sentence + "\n")
+                else:
+                    print(sentence)
 
     def output_new_sentence(self):
         """

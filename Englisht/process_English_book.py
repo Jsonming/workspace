@@ -6,6 +6,7 @@
 # @File    : process_English.py
 # @Software: PyCharm
 import sys
+import time
 
 sys.path.append("..")
 import nltk
@@ -61,7 +62,23 @@ class ProcessEnglish(object):
                             else:
                                 n_f.write(sentence + "\n")
 
+    def process_same_sentence(self):
+        """
+            处理句子，去除首尾引号
+        :return:
+        """
+        finger_print = set()
+
+        with open('ebook_sentence.txt', 'r', encoding='utf8') as input_f, open('temp.txt', 'a',
+                                                                               encoding='utf8') as output_f:
+            for line in input_f:
+                sentence = line.strip().strip("'").strip(',').strip()
+                new_sentence = sentence.capitalize()
+                if new_sentence not in finger_print:
+                    finger_print.add(new_sentence)
+                    output_f.write(new_sentence + "\n")
+
 
 if __name__ == '__main__':
     PE = ProcessEnglish()
-    PE.process_data()
+    PE.process_same_sentence()
