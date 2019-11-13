@@ -5,15 +5,11 @@
 # @Site    : 
 # @File    : process_English.py
 # @Software: PyCharm
-import sys
-
-sys.path.append("..")
-import nltk
 from nltk.tokenize import sent_tokenize
-
-from work.mylib import delete_special_characters, contain_number, sentence_length, delete_extra_spaces
-from work.mylib import delete_url_link, delete_brackets_content, delete_brackets, replace_newline_characters
+from work.mylib.lib import delete_special_characters, contain_number, sentence_length, delete_extra_spaces
+from work.mylib.lib import delete_url_link, delete_brackets_content, delete_brackets, replace_newline_characters
 from work.mylib.mysql_my import MySql
+from work.dingding.dingding_decorator import dingding_monitor
 
 
 class ProcessEnglish(object):
@@ -37,9 +33,10 @@ class ProcessEnglish(object):
                 sentence]
         return all(flag)
 
+    @dingding_monitor
     def process_data(self):
-        with open('news_sentence.txt', 'a', encoding='utf8') as s_f, open('news_num_sentence.txt', 'a',
-                                                                          encoding='utf8') as n_f:
+        with open('ebook_sentence.txt', 'a', encoding='utf8') as s_f, open('ebook_num_sentence.txt', 'a',
+                                                                           encoding='utf8') as n_f:
             for batch in self.read_data():
                 for row in batch:
                     content = row[0]
@@ -55,12 +52,13 @@ class ProcessEnglish(object):
                         sentence_len = sentence_length(sentence)
                         if 5 <= sentence_len <= 15:
                             if not contain_number(sentence):
-                                words = nltk.word_tokenize(sentence)
-                                if self.contain_word(words):
-                                    s_f.write(sentence + "\n")
+                                # words = nltk.word_tokenize(sentence)
+                                # if self.contain_word(words):
+                                s_f.write(sentence + "\n")
                             else:
                                 n_f.write(sentence + "\n")
 
+    @dingding_monitor
     def process_same_sentence(self):
         """
             处理句子，去除首尾引号
@@ -68,8 +66,10 @@ class ProcessEnglish(object):
         """
         finger_print = set()
 
-        with open('ebook_sentence.txt', 'r', encoding='utf8') as input_f, open('temp.txt', 'a',
-                                                                               encoding='utf8') as output_f:
+        remove_before_file = 'ebook_sentence.txt'
+        remove_after_file = "ebook_sentence_new.txt"
+        with open(remove_before_file, 'r', encoding='utf8') as input_f, open(remove_after_file, 'a',
+                                                                             encoding='utf8') as output_f:
             for line in input_f:
                 sentence = line.strip().strip("'").strip(',').strip()
                 new_sentence = sentence.capitalize()
@@ -80,4 +80,4 @@ class ProcessEnglish(object):
 
 if __name__ == '__main__':
     PE = ProcessEnglish()
-    PE.process_same_sentence()
+    PE.process_data()
