@@ -6,3 +6,5 @@
 # @File    : setting.py
 # @Software: PyCharm
 
+# 钉钉群设置，@个人电话
+phone = 13126832709

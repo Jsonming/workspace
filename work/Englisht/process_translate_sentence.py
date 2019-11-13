@@ -5,9 +5,9 @@
 # @Site    : 
 # @File    : process_translate_sentence.py
 # @Software: PyCharm
-from work.mylib import MyRedis
+from work.mylib.redis_my import MyRedis
 from work.mylib.mysql_my import MySql
-from work.mylib import delete_special_characters, contain_number, sentence_length
+from work.mylib.lib import delete_special_characters, contain_number, sentence_length
 from work.dingding.dingding_decorator import dingding_monitor
 
 

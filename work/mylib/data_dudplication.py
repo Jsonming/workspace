@@ -7,8 +7,8 @@
 # @Software: PyCharm
 import pandas as pd
 import numpy as np
-from work.mylib import NewProcess
-from work.mylib import gen_md5
+from work.common.lib import NewProcess
+from work.common.lib import gen_md5
 
 
 class DataDeduplication(object):
