@@ -13,7 +13,7 @@ current = os.getcwd()
 dirs = os.listdir(current)
 for i in dirs:
     if os.path.splitext(i)[1] == ".mp4":
-        bname = str(os.path.splitext(i)[0].encode('utf-8')).replace('\\','%').replace(' ','_')
+        bname = str(os.path.splitext(i)[0].encode('utf-8')).replace('\\', '%').replace(' ', '_')
         os.rename(i, 'temp.mp4')
         getmp3 = 'ffmpeg -i temp.mp4 -f mp3 -vn temp.mp3'
         cutmp3 = 'ffmpeg -i temp.mp3 -ss 00:00:15 -acodec copy tempcut.mp3'

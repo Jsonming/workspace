@@ -30,10 +30,3 @@ def dingding_monitor(func):
         return resp
 
     return send_message
-
-
-@dingding_monitor
-def test():
-    print("hello word")
-
-
