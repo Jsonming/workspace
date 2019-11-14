@@ -75,6 +75,7 @@ class ProcessTranslateSentence(object):
                         else:
                             num_f.write(sentence + "\n")
 
+    @dingding_monitor
     def remove_repeat_sentence(self):
         """
             去重
@@ -82,8 +83,8 @@ class ProcessTranslateSentence(object):
         """
         mr = MyRedis()
 
-        remove_before_file = "temp.txt"
-        remove_after_file = "ebook_sentence_new.txt"
+        remove_before_file = "ebook_sentence_new.txt"
+        remove_after_file = "ebook_sentence_new_new.txt"
 
         with open(remove_before_file, 'r', encoding='utf8')as f, open(remove_after_file, 'a', encoding='utf8') as new_f:
             for line in f:
@@ -104,4 +105,4 @@ class ProcessTranslateSentence(object):
 
 if __name__ == '__main__':
     pts = ProcessTranslateSentence()
-    pts.process_new_sentence()
+    pts.remove_repeat_sentence()

@@ -66,8 +66,8 @@ class ProcessEnglish(object):
         """
         finger_print = set()
 
-        remove_before_file = 'ebook_sentence.txt'
-        remove_after_file = "ebook_sentence_new.txt"
+        remove_before_file = 'ebook_num_sentence.txt'
+        remove_after_file = "ebook_num_sentence_new.txt"
         with open(remove_before_file, 'r', encoding='utf8') as input_f, open(remove_after_file, 'a',
                                                                              encoding='utf8') as output_f:
             for line in input_f:
@@ -80,4 +80,4 @@ class ProcessEnglish(object):
 
 if __name__ == '__main__':
     PE = ProcessEnglish()
-    PE.process_data()
+    PE.process_same_sentence()
