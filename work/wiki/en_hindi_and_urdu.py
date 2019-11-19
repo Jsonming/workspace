@@ -19,8 +19,8 @@ class DemoSpider(object):
         self.resp = None
 
     def crawl(self, off_number=None):
-        # url = "https://en.wikipedia.org/wiki/Help:IPA/Hindi_and_Urdu"
-        url = "https://www.baidu.com"
+        url = "https://en.wikipedia.org/wiki/Help:IPA/Hindi_and_Urdu"
+        # url = "https://www.baidu.com"
         querystring = {"delivery_city_slug": "ramsey-ny-restaurants", "store_only": "true", "limit": "50",
                        "offset": off_number}
         payload = ""
@@ -41,39 +41,46 @@ class DemoSpider(object):
         # for store in stores:
         #     store_name = store.get("business").get("name")
         #     names.append(store_name)
+
+        # 表格
+        # html = etree.HTML(self.resp)
+        # IPA_table_row = html.xpath('//table[@class="wikitable"]/tbody/tr')
+        # with open('en_hindi_and_urdu.txt', 'a', encoding='utf8') as f:
+        #     td_two_mark, td_three_mark, td_four_mark, td_five_mark = None, None, None, None
+        #     for row in IPA_table_row:
+        #         th = row.xpath('./th//text()')
+        #         td = row.xpath('./td')
+        #         if td:
+        #             td_one = ''.join(td[0].xpath('.//text()')).strip()
+        #             if len(td) == 1:
+        #                 td_two = td_two_mark
+        #                 td_three = td_three_mark
+        #                 td_four = td_four_mark
+        #                 td_five = td_five_mark
+        #             elif len(td) == 5:
+        #                 td_two = ''.join(td[1].xpath('.//text()')).strip()
+        #                 td_three = ''.join(td[2].xpath('.//text()')).strip()
+        #                 td_four = ''.join(td[3].xpath('.//text()')).strip()
+        #                 td_five = ''.join(td[4].xpath('.//text()')).strip()
+        #             else:
+        #                 print("未知情况")
+        #                 print(td)
         #
-        html = etree.HTML(self.resp)
-        IPA_table_row = html.xpath('//table[@class="wikitable"]/tbody/tr')
-        with open('en_hindi_and_urdu.html', 'a', encoding='utf8') as f:
-            # td_two_mark, td_three_mark, td_four_mark, td_five_mark = None, None, None, None
-            # for row in IPA_table_row:
-            #     th = row.xpath('./th//text()')
-            #     td = row.xpath('./td')
-            #     if td:
-            #         td_one = ''.join(td[0].xpath('.//text()')).strip()
-            #         if len(td) == 1:
-            #             td_two = td_two_mark
-            #             td_three = td_three_mark
-            #             td_four = td_four_mark
-            #             td_five = td_five_mark
-            #         elif len(td) == 5:
-            #             td_two = ''.join(td[1].xpath('.//text()')).strip()
-            #             td_three = ''.join(td[2].xpath('.//text()')).strip()
-            #             td_four = ''.join(td[3].xpath('.//text()')).strip()
-            #             td_five = ''.join(td[4].xpath('.//text()')).strip()
-            #         else:
-            #             print("未知情况")
-            #             print(td)
-            #
-            #         td_two_mark = td_two
-            #         td_three_mark = td_three
-            #         td_four_mark = td_four
-            #         td_five_mark = td_five
-            #
-            #         f.write('    '.join((td_one, td_two, td_three, td_four, td_five, '\n')))
-            #     else:
-            #         f.write('    '.join(th))
-            f.write(self.resp)
+        #             td_two_mark = td_two
+        #             td_three_mark = td_three
+        #             td_four_mark = td_four
+        #             td_five_mark = td_five
+        #
+        #             f.write('\t'.join((td_one, td_two, td_three, td_four, td_five, '\n')))
+        #         else:
+        #             f.write('\t'.join(th))
+
+        # note
+        with open("note.txt", 'a', encoding='utf8')as f:
+            html = etree.HTML(self.resp)
+            notes = html.xpath('//ol[@class="references"]/li')
+            for node_note in notes:
+                f.write(''.join(node_note.xpath(".//text()")))
 
     def save(self, result):
         with open(r'C:\Users\Administrator\Desktop\name.txt', 'a', encoding='utf-8')as f:

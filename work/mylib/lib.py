@@ -10,6 +10,7 @@ import shutil
 import os
 import hashlib
 from polyglot.text import Text
+from unrar import rarfile
 
 
 def delete_url_link(content):
@@ -206,6 +207,16 @@ def read_file(file):
     return [item.strip() for item in data]
 
 
+def read_rar_file(file_path, pwd=None):
+    """
+    读取zip压缩文件内所有文件的文件名
+    :param path: 路径
+    :return: []
+    """
+    file = rarfile.RarFile(file_path, pwd=pwd)
+    return file.namelist()
+
+
 # 工具性
 def gen_md5(data):
     """
@@ -258,6 +269,15 @@ def big_file_remove_same(input_file, output_file):
 
 
 if __name__ == '__main__':
-    input_file = r"C:\Users\Administrator\Desktop\aaa.txt"
-    output_file = r"C:\Users\Administrator\Desktop\bbb.txt"
-    big_file_remove_same(input_file, output_file)
+    # input_file = r"C:\Users\Administrator\Desktop\aaa.txt"
+    # output_file = r"C:\Users\Administrator\Desktop\bbb.txt"
+    # big_file_remove_same(input_file, output_file)
+
+    path = r"I:\学习\书"
+    for file in list_file(path):
+        try:
+            book_names = read_rar_file(file)
+        except:
+            book_names = read_rar_file(file, pwd="123456")
+        for book_name in book_names:
+            print(book_name)

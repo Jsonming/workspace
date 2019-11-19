@@ -41,10 +41,11 @@ class DemoSpider(object):
         self.resp = response.text
 
     def parse_html(self):
-        print(self.resp)
-        # html = etree.HTML(self.resp)
-        # names = html.xpath('//tr/td/text()')
-        # print(names)
+        html = etree.HTML(self.resp)
+        nodes = html.xpath('//table[@class="wikitable"]/tbody/tr')
+        for node in nodes:
+            print(node.xpath('.//text()'))
+
 
     def parse_json(self):
         names = []
@@ -55,10 +56,10 @@ class DemoSpider(object):
             names.append(store_name)
 
     def run(self):
-        url = task_urls[-1]
+        url = task_urls[0]
         print(url)
-        self.crawl_get(url)
 
+        self.crawl_get(url)
         self.parse_html()
 
 
