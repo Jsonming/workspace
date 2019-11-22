@@ -21,7 +21,7 @@ class ProcessEnglish(object):
 
     def read_data(self):
         my = MySql()
-        sql = """ select content from spiderframe.English_corpus_genlib where id > 10;"""
+        sql = """ select content from spiderframe.English_corpus_genlib where id > 1200;"""
         return my.get_many(sql)
 
     def contain_word(self, sentence):

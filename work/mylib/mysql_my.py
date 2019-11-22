@@ -9,7 +9,7 @@
 from pymysql.cursors import SSCursor
 import pymysql.cursors
 
-LIMIT_NUMBER = 2
+LIMIT_NUMBER = 3
 
 
 class MySql(object):

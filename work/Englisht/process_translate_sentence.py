@@ -86,8 +86,8 @@ class ProcessTranslateSentence(object):
         """
         mr = MyRedis()
 
-        remove_before_file = "simple_sentence.txt"
-        remove_after_file = "simple_sentence_new.txt"
+        remove_before_file = "news_num_sentence_temp.txt"
+        remove_after_file = "news_num_sentence_new.txt"
 
         with open(remove_before_file, 'r', encoding='utf8')as f, \
                 open(remove_after_file, 'a', encoding='utf8') as new_f:
@@ -108,7 +108,7 @@ class ProcessTranslateSentence(object):
         :return:
         """
         from work.mylib.lib import big_file_remove_same
-        big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
+        big_file_remove_same("news_num_sentence.txt", "news_num_sentence_temp.txt")
 
 
 if __name__ == '__main__':
