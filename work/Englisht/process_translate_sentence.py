@@ -5,10 +5,13 @@
 # @Site    : 
 # @File    : process_translate_sentence.py
 # @Software: PyCharm
+import nltk
 from work.mylib.redis_my import MyRedis
 from work.mylib.mysql_my import MySql
 from work.mylib.lib import delete_special_characters, contain_number, sentence_length
 from work.dingding.dingding_decorator import dingding_monitor
+from work.Englisht.deal_apostrophe import apostrophe_index
+from work.mylib.lib import big_file_remove_same
 
 
 class ProcessTranslateSentence(object):
@@ -36,7 +39,7 @@ class ProcessTranslateSentence(object):
 
     def read_data(self, start=1):
         my = MySql()
-        sql = """select * from spiderframe.translate_sentence;"""
+        sql = """select * from spiderframe.translate_sentence_new where id >10;"""
         return my.get_many(sql)
 
     def contain_word(self, words):
@@ -55,8 +58,8 @@ class ProcessTranslateSentence(object):
             处理抓取的句子
         :return:    将抓取的句子分类后输出到本地文件
         """
-        with open('not_contain_num.txt', 'a', encoding='utf8') as not_num_f, open("contain_num.txt", 'a',
-                                                                                  encoding='utf8') as num_f:
+        with open('not_contain_num.txt', 'a', encoding='utf8') as \
+                not_num_f, open("contain_num.txt", 'a', encoding='utf8') as num_f:
 
             for batch in self.read_data():
                 for row in batch:
@@ -64,14 +67,14 @@ class ProcessTranslateSentence(object):
                     sentence = delete_special_characters(sentence)
                     sentence = sentence.replace('"', '')
                     sentence_len = sentence_length(sentence)
-                    sentence = sentence.strip().strip("'").strip(',').strip()
+                    sentence = sentence.strip()
                     sentence = sentence.capitalize()
                     if 1 < sentence_len:
                         if not contain_number(sentence):
-                            # words = nltk.word_tokenize(sentence)
-                            # if self.contain_word(words):
-                            #     not_num_f.write(sentence + "\n")
-                            not_num_f.write(sentence + "\n")
+                            words = nltk.word_tokenize(sentence)
+                            word_index = apostrophe_index(words)
+                            if not word_index:
+                                not_num_f.write(sentence + "\n")
                         else:
                             num_f.write(sentence + "\n")
 
@@ -83,10 +86,12 @@ class ProcessTranslateSentence(object):
         """
         mr = MyRedis()
 
-        remove_before_file = "ebook_sentence_new.txt"
-        remove_after_file = "ebook_sentence_new_new.txt"
+        remove_before_file = "simple_sentence.txt"
+        remove_after_file = "simple_sentence_new.txt"
 
-        with open(remove_before_file, 'r', encoding='utf8')as f, open(remove_after_file, 'a', encoding='utf8') as new_f:
+        with open(remove_before_file, 'r', encoding='utf8')as f, \
+                open(remove_after_file, 'a', encoding='utf8') as new_f:
+
             for line in f:
                 sentence = line.strip()
                 fingerprint = mr.generate_md5(sentence)
@@ -96,11 +101,14 @@ class ProcessTranslateSentence(object):
                 else:
                     print(sentence)
 
-    def output_new_sentence(self):
+    @dingding_monitor
+    def same_sentence(self):
         """
             输出到文件
         :return:
         """
+        from work.mylib.lib import big_file_remove_same
+        big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
 
 
 if __name__ == '__main__':

@@ -259,7 +259,8 @@ def big_file_remove_same(input_file, output_file):
     :return:
     """
     finger_print_set = set()
-    with open(input_file, 'r', encoding='utf8') as f, open(output_file, 'w', encoding='utf8') as ff:
+    with open(input_file, 'r', encoding='utf8') as f, \
+            open(output_file, 'w', encoding='utf8') as ff:
         for line in f:
             line_string = line.strip()
             finger_print = gen_md5(line_string)
