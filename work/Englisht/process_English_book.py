@@ -6,6 +6,7 @@
 # @File    : process_English.py
 # @Software: PyCharm
 import nltk
+import json
 from nltk.tokenize import sent_tokenize
 from work.mylib.lib import delete_special_characters, contain_number, sentence_length, delete_extra_spaces
 from work.mylib.lib import delete_url_link, delete_brackets_content, delete_brackets, replace_newline_characters
@@ -21,7 +22,7 @@ class ProcessEnglish(object):
 
     def read_data(self):
         my = MySql()
-        sql = """ select content from spiderframe.English_corpus_genlib where id > 1200;"""
+        sql = """ select content from spiderframe.English_corpus_genlib limit 3;"""
         return my.get_many(sql)
 
     def contain_word(self, sentence):
@@ -85,7 +86,16 @@ class ProcessEnglish(object):
         from work.mylib.lib import big_file_remove_same
         big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
 
+    def output_mysql(self):
+        with open(r'C:\Users\Administrator\Desktop\data.txt', 'a', encoding='utf8')as f:
+            for batch in self.read_data():
+                for row in batch:
+                    content = {}
+                    content["content"] = row[0]
+                    data = json.dumps(content)
+                    f.write(data + "\n")
+
 
 if __name__ == '__main__':
     PE = ProcessEnglish()
-    PE.process_data()
+    PE.output_mysql()

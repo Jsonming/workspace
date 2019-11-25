@@ -74,7 +74,6 @@ class ProcessNews(object):
                 else:
                     print(sentence)
 
-
     @dingding_monitor
     def same_sentence(self):
         """
@@ -84,7 +83,14 @@ class ProcessNews(object):
         from work.mylib.lib import big_file_remove_same
         big_file_remove_same("news_sentence.txt", "news_sentence_temp.txt")
 
+    def count(self):
+        num = 0
+        with open(r'C:\Users\Administrator\Desktop\新闻\news_sentence_new.txt', 'r', encoding='utf8') as f:
+            for line in f:
+                num += 1
+        print(num)
+
 
 if __name__ == '__main__':
     pn = ProcessNews()
-    pn.remove_repeat_sentence()
+    pn.count()

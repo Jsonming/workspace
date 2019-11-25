@@ -28,3 +28,12 @@ class MyRedis(object):
 
     def insert_(self, key, value):
         self.r.lpush(key, value)
+
+    def get_finger(self):
+        a = self.r.hkeys("fingerprint")
+        print(a)
+
+
+if __name__ == '__main__':
+    mr = MyRedis()
+    mr.get_finger()
