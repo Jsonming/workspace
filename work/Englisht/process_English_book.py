@@ -22,7 +22,7 @@ class ProcessEnglish(object):
 
     def read_data(self):
         my = MySql()
-        sql = """ select content from spiderframe.English_corpus_genlib limit 3;"""
+        sql = """ select content from spiderframe.English_corpus_genlib where id < 2000;"""
         return my.get_many(sql)
 
     def contain_word(self, sentence):
@@ -86,6 +86,7 @@ class ProcessEnglish(object):
         from work.mylib.lib import big_file_remove_same
         big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
 
+    @dingding_monitor
     def output_mysql(self):
         with open(r'data.txt', 'a', encoding='utf8')as f:
             for batch in self.read_data():
