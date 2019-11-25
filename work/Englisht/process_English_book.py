@@ -87,7 +87,7 @@ class ProcessEnglish(object):
         big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
 
     def output_mysql(self):
-        with open(r'C:\Users\Administrator\Desktop\data.txt', 'a', encoding='utf8')as f:
+        with open(r'data.txt', 'a', encoding='utf8')as f:
             for batch in self.read_data():
                 for row in batch:
                     content = {}
