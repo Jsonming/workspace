@@ -6,7 +6,7 @@
 # @File    : process_translate_sentence.py
 # @Software: PyCharm
 import nltk
-from work.mylib.redis_my import MyRedis
+from work.mylib.redis_my import MyRedis, SSDBCon
 from work.mylib.mysql_my import MySql
 from work.mylib.lib import delete_special_characters, contain_number, sentence_length
 from work.dingding.dingding_decorator import dingding_monitor
@@ -19,23 +19,23 @@ class ProcessTranslateSentence(object):
         with open('简单句单词总.txt', 'r', encoding='utf8') as f:
             self.simple_word = set(f.read().split('\n'))
 
+    @dingding_monitor
     def process_original_sentence(self):
         """
             处理分析强哥给的原始的句子
         :return:
         """
-        mr = MyRedis()
-        redis_db_name = "corpus_temp_fingerprint"
+        mr = SSDBCon()
+        redis_db_name = "corpus_recording_fingerprint"
 
         recoding_corpus = r"C:\Users\Administrator\Desktop\work_temp\英语句子扩量\20W录音语料（带音标）随机\20W录音语料（带音标）随机.txt"
         English_recoding_corpus = r"C:\Users\Administrator\Desktop\work_temp\英语句子扩量\2500小时英语录音语料（带音标60W）随机\2500小时英语录音语料（带音标60W）随机.txt"
 
-        with open(recoding_corpus, 'r', encoding='utf8')as f:
+        with open(English_recoding_corpus, 'r', encoding='utf8')as f:
             for line in f:
                 sentence = line.split("\t")[0]
-                fingerprint = mr.generate_md5(sentence)
-                if not mr.hash_exist(fingerprint):
-                    mr.hash_(fingerprint)
+                if not mr.exist_finger(redis_db_name, sentence):
+                    mr.insert_finger(redis_db_name, sentence)
 
     def read_data(self, start=1):
         my = MySql()
@@ -113,4 +113,4 @@ class ProcessTranslateSentence(object):
 
 if __name__ == '__main__':
     pts = ProcessTranslateSentence()
-    pts.remove_repeat_sentence()
+    pts.process_original_sentence()
