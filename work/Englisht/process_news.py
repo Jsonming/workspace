@@ -85,7 +85,7 @@ class ProcessNews(object):
 
     def count(self):
         num = 0
-        with open(r'C:\Users\Administrator\Desktop\新闻\news_sentence_new.txt', 'r', encoding='utf8') as f:
+        with open(r'ebook_num_sentence_temp.txt', 'r', encoding='utf8') as f:
             for line in f:
                 num += 1
         print(num)

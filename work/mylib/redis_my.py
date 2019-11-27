@@ -23,11 +23,11 @@ class MyRedis(object):
         md5.update(data.encode('utf-8'))
         return md5.hexdigest()
 
-    def hash_(self, str):
-        return self.r.hset(name="fingerprint", key=str, value=1)
+    def hash_(self, name="fingerprint", string=None):
+        return self.r.hset(name=name, key=string, value=1)
 
-    def hash_exist(self, str):
-        return self.r.hexists(name='fingerprint', key=str)
+    def hash_exist(self, name='fingerprint', string=None):
+        return self.r.hexists(name=name, key=string)
 
     def insert_(self, key, value):
         self.r.lpush(key, value)

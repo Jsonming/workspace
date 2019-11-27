@@ -13,6 +13,8 @@ from work.mylib.lib import delete_url_link, delete_brackets_content, delete_brac
 from work.mylib.mysql_my import MySql
 from work.dingding.dingding_decorator import dingding_monitor
 from work.Englisht.deal_apostrophe import apostrophe_index
+from work.mylib.redis_my import SSDBCon
+from multiprocessing import Pool
 
 
 class ProcessEnglish(object):
@@ -38,29 +40,33 @@ class ProcessEnglish(object):
 
     @dingding_monitor
     def process_data(self):
-        with open('ebook_sentence.txt', 'a', encoding='utf8') as s_f, open('ebook_num_sentence.txt', 'a',
-                                                                           encoding='utf8') as n_f:
-            for batch in self.read_data():
-                for row in batch:
-                    content = row[0]
-                    content = delete_url_link(content)
-                    content = delete_brackets_content(content)
-                    content = delete_brackets(content)
-                    content = replace_newline_characters(content)
-                    content = delete_extra_spaces(content)
-                    content = delete_special_characters(content)
+        with open('ebook_sentence.txt', 'a', encoding='utf8') as s_f, \
+                open('ebook_num_sentence.txt', 'a', encoding='utf8') as n_f, \
+                open(r'C:\Users\Administrator\Desktop\data.txt', 'r', encoding='utf8') as r_f:
+            # for batch in self.read_data():
+            #     for row in batch:
+            #         content = row[0]
+            for line in r_f:
+                data = json.loads(line.strip())
+                content = data.get("content")
+                content = delete_url_link(content)
+                content = delete_brackets_content(content)
+                content = delete_brackets(content)
+                content = replace_newline_characters(content)
+                content = delete_extra_spaces(content)
+                content = delete_special_characters(content)
 
-                    sentences = sent_tokenize(content)
-                    for sentence in sentences:
-                        sentence_len = sentence_length(sentence)
-                        if 5 <= sentence_len <= 15:
-                            if not contain_number(sentence):
-                                words = nltk.word_tokenize(sentence)
-                                word_index = apostrophe_index(words)
-                                if not word_index:
-                                    s_f.write(sentence + "\n")
-                            else:
-                                n_f.write(sentence + "\n")
+                sentences = sent_tokenize(content)
+                for sentence in sentences:
+                    # sentence_len = sentence_length(sentence)
+                    # if 5 <= sentence_len <= 15:
+                    if not contain_number(sentence):
+                        words = nltk.word_tokenize(sentence)
+                        word_index = apostrophe_index(words)
+                        if not word_index:
+                            s_f.write(sentence + "\n")
+                    else:
+                        n_f.write(sentence + "\n")
 
     @dingding_monitor
     def process_same_sentence(self):
@@ -82,9 +88,9 @@ class ProcessEnglish(object):
                     output_f.write(new_sentence + "\n")
 
     @dingding_monitor
-    def process_diff(self):
+    def process_diff(self, input_file=None, output_file=None):
         from work.mylib.lib import big_file_remove_same
-        big_file_remove_same("contain_num.txt", "simple_sentence_num.txt")
+        big_file_remove_same(input_file, output_file)
 
     @dingding_monitor
     def output_mysql(self):
@@ -96,7 +102,59 @@ class ProcessEnglish(object):
                     data = json.dumps(content)
                     f.write(data + "\n")
 
+    def filter_length(self, input_file=None, output_file=None):
+        """
+        句长筛选函数
+        :param intput_file:输入文件
+        :param outputfile: 输出文件
+        :return:
+        """
+        with open(output_file, 'a', encoding='utf8') as f:
+            for line in open(input_file, 'r', encoding='utf8'):
+                sentence = line.strip()
+                sentence_len = sentence_length(sentence)
+                if 4 <= sentence_len <= 18:
+                    f.write(sentence + "\n")
+
+    def multi_db_repeat_sentence(self, input_file=None, output_file=None, diff_db=None, insert_db=None):
+        """
+        多库对比去重
+        :param input_file:输入文件
+        :param output_file: 输出文件
+        :param diff_db: diff 库 list
+        :param insert_db: 指纹插入库
+        :return:
+        """
+        mr = SSDBCon()
+
+        with open(output_file, 'a', encoding='utf8') as new_f:
+            for line in open(input_file, 'r', encoding='utf8'):
+                sentence = line.strip()
+                flag = [mr.exist_finger(db_name, sentence) for db_name in diff_db]
+                if any(flag):
+                    pass  # 句子重复不用处理，不要了
+                else:
+                    # new_f.write(sentence + "\n")
+                    # mr.insert_finger(insert_db, sentence)
+                    print(sentence)
+
 
 if __name__ == '__main__':
+    # input_file = "ebook_num_sentence.txt"
+    # output_file = "ebook_num_sentence_filter.txt"
+    # PE.filter_length(input_file=input_file, output_file=output_file)
+
+    # input_file = "ebook_sentence_filter.txt"
+    # output_file = "ebook_sentence_temp.txt"
+
+    # input_file = "ebook_num_sentence_filter.txt"
+    # output_file = "ebook_num_sentence_temp.txt"
+    # PE.process_diff(input_file, output_file)
+    pool = Pool(3)
+
     PE = ProcessEnglish()
-    PE.output_mysql()
+    input_file = "ebook_num_sentence_temp.txt"
+    output_file = "ebook_num_sentence_new.txt"
+    diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint"]
+    insert_db = "corpus_ebook_fingerprint"
+    PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)

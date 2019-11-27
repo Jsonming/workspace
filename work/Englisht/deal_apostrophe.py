@@ -17,7 +17,7 @@ def select_aopstrophe():
 
 def apostrophe_index(string_list):
     """
-    统计单引号在原句子中的位置索引
+    判断是否有单引号，如果有单引号，把单引号索引（不准确）放到列表里面。用于判断是否有单引号
     :param string_list: 字符串列表
     :return: 索引列表
     """
