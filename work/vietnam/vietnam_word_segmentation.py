@@ -37,21 +37,23 @@ class VietnamWordSegmentation(object):
                 else:
                     s_f.write(w + "\n")
 
-    def diff_word(self, diff_file=None):
+    def diff_word(self, base_file=None, diff_file=None):
         """
         将分出来的词跟wordlist 做diff
         :diff_file 要跟wordlist对比的词文件
         :return:
         """
         word_list = set()
-        with open("wordlist.txt", 'r', encoding='utf8')as w_f:
+        word_file = base_file
+
+        with open(word_file, 'r', encoding='utf8')as w_f:
             for line in w_f:
-                word_list.add(line.strip())
+                word_list.add(line.strip().lower())
 
         word_list_temp = set()
         with open(diff_file, 'r', encoding='utf8')as d_f:
             for line in d_f:
-                word = line.strip()
+                word = line.strip().lower()
                 if word not in word_list:
                     word_list_temp.add(word)
 
@@ -63,7 +65,8 @@ class VietnamWordSegmentation(object):
 
 if __name__ == '__main__':
     vws = VietnamWordSegmentation()
-    result_file = "result.txt"
-    vws.analysis_result(result_file=result_file)
-    vws.diff_word("multi_word.txt")
-    vws.diff_word("single_word.txt")
+    # result_file = "result.txt"
+    # vws.analysis_result(result_file=result_file)
+    # vws.diff_word("multi_word.txt")
+    # vws.diff_word("single_word.txt")
+    vws.diff_word(diff_file=r"C:\Users\Administrator\Desktop\分词工具.txt")
