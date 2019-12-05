@@ -33,6 +33,6 @@ def video_to_img(video_file=None, to_path=None):
 
 
 if __name__ == '__main__':
-    video_file = r"I:\工作\宠物视频\小猞猁汉娜回家调戏黑猫，招黑猫暴力殴打！.flv"
-    path = r"C:\Users\Administrator\Desktop\video"
+    video_file = r"C:\Users\Administrator\Desktop\work\src\indoor_frontal_left.mp4"
+    path = r"C:\Users\Administrator\Desktop\work\res\new"
     video_to_img(video_file=video_file, to_path=path)

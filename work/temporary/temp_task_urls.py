@@ -8,8 +8,9 @@
 
 # 临时任务urls
 task_urls = [
-    "https://en.wikipedia.org/wiki/Help:IPA/Hindi_and_Urdu",
+    "https://www.bbc.com/news/business",
 
+    "https://en.wikipedia.org/wiki/Help:IPA/Hindi_and_Urdu",
     "https://www.worldclasslearning.com/english/4000-most-common-english-words.html",
     # 136
     'https://m10.music.126.net/20190611185116/7bde3cecfdb01082f81e85cb922eb511/yyaac/0509/060b/565c/2c3adff7c11a4540ba62a651df894b16.m4a',

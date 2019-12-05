@@ -42,10 +42,11 @@ class DemoSpider(object):
 
     def parse_html(self):
         html = etree.HTML(self.resp)
-        nodes = html.xpath('//table[@class="wikitable"]/tbody/tr')
+        nodes = html.xpath('//*[@id="orb-modules"]/header/div[2]/div[2]/div[1]/nav/ul//a/@href')
         for node in nodes:
-            print(node.xpath('.//text()'))
-
+            if "http" not in node:
+                url = '"' + "https://www.bbc.com" + node + '",'
+                print(url)
 
     def parse_json(self):
         names = []
