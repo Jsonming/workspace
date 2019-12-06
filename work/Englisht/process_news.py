@@ -22,7 +22,7 @@ class ProcessNews(object):
         pass
 
     def read_data(self):
-        file_name = r"C:\Users\Administrator\Desktop\work_temp\英语句子扩量\article.txt"
+        file_name = r"data.txt"
         with open(file_name, 'r', encoding='utf8')as f:
             for line in f:
                 data = json.loads(line.strip())
@@ -30,8 +30,8 @@ class ProcessNews(object):
 
     @dingding_monitor
     def process_data(self):
-        with open('news_sentence.txt', 'a', encoding='utf8') as s_f, \
-                open('news_num_sentence.txt', 'a', encoding='utf8') as n_f:
+        with open('BBC_news_sentence.txt', 'a', encoding='utf8') as s_f, \
+                open('BBC_news_num_sentence.txt', 'a', encoding='utf8') as n_f:
 
             for content in self.read_data():
                 content = delete_url_link(content)
@@ -81,11 +81,11 @@ class ProcessNews(object):
         :return:
         """
         from work.mylib.lib import big_file_remove_same
-        big_file_remove_same("news_sentence.txt", "news_sentence_temp.txt")
+        big_file_remove_same("BBC_news_num_sentence.txt", "BBC_news_num_sentence_temp.txt")
 
     def count(self):
         num = 0
-        with open(r'C:\Users\Administrator\Desktop\ebook_sentence_new.txt', 'r', encoding='utf8') as f:
+        with open(r'BBC_news_sentence_temp.txt', 'r', encoding='utf8') as f:
             for line in f:
                 num += 1
         print(num)

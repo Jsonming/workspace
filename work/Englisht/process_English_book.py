@@ -132,11 +132,10 @@ class ProcessEnglish(object):
                 sentence = line.strip()
                 flag = [mr.exist_finger(db_name, sentence) for db_name in diff_db]
                 if any(flag):
-                    pass  # 句子重复不用处理，不要了
+                    print(sentence)  # 句子重复不用处理，不要了
                 else:
-                    # new_f.write(sentence + "\n")
-                    # mr.insert_finger(insert_db, sentence)
-                    print(sentence)
+                    new_f.write(sentence + "\n")
+                    mr.insert_finger(insert_db, sentence)
 
 
 if __name__ == '__main__':
@@ -150,11 +149,10 @@ if __name__ == '__main__':
     # input_file = "ebook_num_sentence_filter.txt"
     # output_file = "ebook_num_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
-    pool = Pool(3)
 
     PE = ProcessEnglish()
-    input_file = "ebook_num_sentence_temp.txt"
-    output_file = "ebook_num_sentence_new.txt"
+    input_file = "BBC_news_sentence_temp.txt"
+    output_file = "BBC_news_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint"]
-    insert_db = "corpus_ebook_fingerprint"
+    insert_db = "corpus_news_fingerprint"
     PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
