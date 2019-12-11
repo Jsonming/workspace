@@ -151,14 +151,14 @@ if __name__ == '__main__':
     # PE.process_diff(input_file, output_file)
 
     PE = ProcessEnglish()
-    input_file = "chinadaily_news_sentence_temp.txt"
-    output_file = "chinadaily_news_sentence_new.txt"
+    input_file = "BBC_news_sentence_temp.txt"
+    output_file = "BBC_news_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint"]
     insert_db = "corpus_news_fingerprint"
     PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
 
-    input_file = "chinadaily_news_num_sentence_temp.txt"
-    output_file = "chinadaily_news_num_sentence_new.txt"
+    input_file = "BBC_news_sentence_temp.txt"
+    output_file = "BBC_news_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint"]
     insert_db = "corpus_news_fingerprint"
     PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
