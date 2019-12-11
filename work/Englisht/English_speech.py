@@ -7,7 +7,7 @@
 # @Software: PyCharm
 
 from work.mylib.mysql_my import MySql
-from work.mylib import delete_brackets_content, delete_brackets, replace_newline_characters, \
+from work.mylib.lib import delete_brackets_content, delete_brackets, replace_newline_characters, \
     delete_extra_spaces, split_content, delete_special_characters, contain_number, sentence_length
 
 
