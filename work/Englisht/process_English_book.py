@@ -15,6 +15,16 @@ from work.dingding.dingding_decorator import dingding_monitor
 from work.Englisht.deal_apostrophe import apostrophe_index
 from work.mylib.redis_my import SSDBCon
 from multiprocessing import Pool
+import threading
+from threading import Thread
+
+flag = []
+
+
+def aaa(db_name, sentence):
+    mr = SSDBCon()
+    global flag
+    flag.append(mr.exist_finger(db_name, sentence))
 
 
 class ProcessEnglish(object):
@@ -24,7 +34,7 @@ class ProcessEnglish(object):
 
     def read_data(self):
         my = MySql()
-        sql = """ select content from spiderframe.text_english_ted_content;"""
+        sql = """ select content from spiderframe.text_english_chinadaily_content1;"""
         return my.get_many(sql)
 
     def contain_word(self, sentence):
@@ -89,8 +99,8 @@ class ProcessEnglish(object):
         big_file_remove_same(input_file, output_file)
 
     @dingding_monitor
-    def output_mysql(self):
-        with open(r'ted_content_data.txt', 'a', encoding='utf8')as f:
+    def output_mysql(self, data_file):
+        with open(data_file, 'a', encoding='utf8')as f:
             for batch in self.read_data():
                 for row in batch:
                     content = {}
@@ -126,46 +136,54 @@ class ProcessEnglish(object):
         with open(output_file, 'a', encoding='utf8') as new_f:
             for line in open(input_file, 'r', encoding='utf8'):
                 sentence = line.strip()
-                flag = [mr.exist_finger(db_name, sentence) for db_name in diff_db]
+                # flag = [mr.exist_finger(db_name, sentence) for db_name in diff_db]
+                global flag
+                tasks = [Thread(target=aaa, args=(db_name, sentence)) for db_name in diff_db]
+                [task.start() for task in tasks]
+                [task.join() for task in tasks]
+                print(flag)
                 if any(flag):
                     print(sentence)  # 句子重复不用处理，不要了
                 else:
                     new_f.write(sentence + "\n")
                     mr.insert_finger(insert_db, sentence)
+                flag = []
 
 
 if __name__ == '__main__':
     PE = ProcessEnglish()
 
-    # PE.output_mysql()
+    # output_file = r'chinadaily_content_data.txt'
+    # PE.output_mysql(output_file)
 
-    # read_file = r"ted_content_data.txt"
-    # output_file = r"ted_sentence.txt"
-    # output_num_file = r"ted_num_sentence.txt"
+    # read_file = r"chinadaily_content_data.txt"
+    # output_file = r"chinadaily_sentence.txt"
+    # output_num_file = r"chinadaily_num_sentence.txt"
     # PE.process_data(read_file, output_file, output_num_file)
 
     # input_file = "ebook_num_sentence.txt"
     # output_file = "ebook_num_sentence_filter.txt"
     # PE.filter_length(input_file=input_file, output_file=output_file)
 
-    # input_file = "ted_sentence.txt"
-    # output_file = "ted_sentence_temp.txt"
+    # input_file = "chinadaily_sentence.txt"
+    # output_file = "chinadaily_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
 
-    # input_file = "ted_num_sentence.txt"
-    # output_file = "ted_num_sentence_temp.txt"
+    # input_file = "chinadaily_num_sentence.txt"
+    # output_file = "chinadaily_num_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
 
-    input_file = r"ted_sentence_temp.txt"
-    output_file = "ted_sentence_new.txt"
+    input_file = r"chinadaily_sentence_temp.txt"
+    output_file = "chinadaily_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint",
                "corpus_translation_fingerprint", "corpus_speech_fingerprint"]
-    insert_db = "corpus_speech_fingerprint"
+    insert_db = "corpus_news_fingerprint"
     PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
 
-    input_file = r"ted_num_sentence_temp.txt"
-    output_file = "ted_num_sentence_new.txt"
+    input_file = r"chinadaily_num_sentence_temp.txt"
+    output_file = "chinadaily_num_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint",
                "corpus_translation_fingerprint", "corpus_speech_fingerprint"]
-    insert_db = "corpus_speech_fingerprint"
+    insert_db = "corpus_news_fingerprint"
     PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
+
