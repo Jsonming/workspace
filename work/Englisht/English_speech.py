@@ -40,7 +40,7 @@ class EnglishSpeech(object):
 
     def run(self):
         """ 程序主要逻辑控制"""
-        sql = "select content from spiderframe.English_speaking_ted_content where id<10;"
+        sql = "select content from spiderframe.English_speaking_ted_content;"
         gen_data = self.read_data(sql)
         for batch in gen_data:
             for line in batch:
