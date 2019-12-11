@@ -47,14 +47,15 @@ class EnglishSpeech(object):
                 content = line[0]
                 if content:
                     text = self.process_content(content)
-                    sentences = split_content(text)
-                    for sentence in sentences:
-                        sentence = delete_special_characters(sentence)
-                        if contain_number(sentence):
-                            sentence = ""
-                        if 8 < sentence_length(sentence) < 18:
-                            with open('English_ted_speech.txt', 'a', encoding="utf8") as f:
-                                f.write(sentence + "\n")
+                    if text:
+                        sentences = split_content(text)
+                        for sentence in sentences:
+                            sentence = delete_special_characters(sentence)
+                            if contain_number(sentence):
+                                sentence = ""
+                            if 8 < sentence_length(sentence) < 18:
+                                with open('English_ted_speech.txt', 'a', encoding="utf8") as f:
+                                    f.write(sentence + "\n")
 
 
 if __name__ == '__main__':
