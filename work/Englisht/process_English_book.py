@@ -156,14 +156,15 @@ if __name__ == '__main__':
     # output_file = "ted_num_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
 
-    # input_file = "BBC_news_sentence_temp.txt"
-    # output_file = "BBC_news_sentence_new.txt"
-    # diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint"]
-    # insert_db = "corpus_news_fingerprint"
-    # PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
+    input_file = r"ted_sentence_temp.txt"
+    output_file = "ted_sentence_new.txt"
+    diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint",
+               "corpus_translation_fingerprint", "corpus_speech_fingerprint"]
+    insert_db = "corpus_speech_fingerprint"
+    PE.multi_db_repeat_sentence(input_file, output_file, diff_db, insert_db)
 
-    input_file = r"ted_speech_sentence.txt"
-    output_file = "ted_speech_sentence_temp.txt"
+    input_file = r"ted_num_sentence_temp.txt"
+    output_file = "ted_num_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint",
                "corpus_translation_fingerprint", "corpus_speech_fingerprint"]
     insert_db = "corpus_speech_fingerprint"
