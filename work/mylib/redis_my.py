@@ -134,7 +134,6 @@ class SSDBCon(object):
         self.conn.connection_pool.disconnect()
 
 
-# if __name__ == '__main__':
-#     ssdb = SSDBCon()
-#     for i in range(50500000, 50999999):
-#         ssdb.insert_to_list("text_english_bbc_link", 'https://www.bbc.com/news/business-{}'.format(i))
+if __name__ == '__main__':
+    ssdb = SSDBCon()
+    ssdb.insert_to_list("text_english_bbc_link", 'https://www.bbc.com/news/technology-50719426')

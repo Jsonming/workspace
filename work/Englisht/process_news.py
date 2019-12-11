@@ -8,6 +8,7 @@
 import json
 import nltk
 from nltk.tokenize import sent_tokenize
+from threadpool import ThreadPool, makeRequests
 from work.mylib.mysql_my import MySql
 from work.mylib.redis_my import MyRedis
 
@@ -22,34 +23,55 @@ class ProcessNews(object):
         pass
 
     def read_data(self):
-        file_name = r"data.txt"
+        file_name = r"C:\Users\Administrator\Desktop\work_temp\英语句子扩量\article.txt"
         with open(file_name, 'r', encoding='utf8')as f:
             for line in f:
                 data = json.loads(line.strip())
-                yield data.get("content")
+                yield data.get("url"), data.get("content")
 
-    @dingding_monitor
     def process_data(self):
-        with open('BBC_news_sentence.txt', 'a', encoding='utf8') as s_f, \
-                open('BBC_news_num_sentence.txt', 'a', encoding='utf8') as n_f:
+        with open('chinadaily_news_sentence.txt', 'a', encoding='utf8') as s_f, \
+                open('chinadaily_news_num_sentence.txt', 'a', encoding='utf8') as n_f:
 
-            for content in self.read_data():
-                content = delete_url_link(content)
-                content = delete_brackets_content(content)
-                content = delete_brackets(content)
-                content = replace_newline_characters(content)
-                content = delete_extra_spaces(content)
-                content = delete_special_characters(content)
+            for item in self.read_data():
+                url, content = item
+                if "chinadaily" in url:
+                    content = delete_url_link(content)
+                    content = delete_brackets_content(content)
+                    content = delete_brackets(content)
+                    content = replace_newline_characters(content)
+                    content = delete_extra_spaces(content)
+                    content = delete_special_characters(content)
 
-                sentences = sent_tokenize(content)
-                for sentence in sentences:
-                    if not contain_number(sentence):
-                        words = nltk.word_tokenize(sentence)
-                        word_index = apostrophe_index(words)
-                        if not word_index:
-                            s_f.write(sentence + "\n")
-                    else:
-                        n_f.write(sentence + "\n")
+                    sentences = sent_tokenize(content)
+                    for sentence in sentences:
+                        if not contain_number(sentence):
+                            words = nltk.word_tokenize(sentence)
+                            word_index = apostrophe_index(words)
+                            if not word_index:
+                                s_f.write(sentence + "\n")
+                        else:
+                            n_f.write(sentence + "\n")
+
+                # 区分来源
+                # if "chinadaily" in content:
+                #     pass
+                # elif "articles" in content:
+                #     pass  # google新闻
+                # elif "thejakartapost" in content:
+                #     pass
+                # elif "ehainan" in content:
+                #     pass
+                # elif "eguizhou" in content:
+                #     pass
+                # elif "ehangzhou" in content:
+                #     pass
+                # elif "nationthailand" in content:
+                #     pass
+                # elif "exploringtianjin" in content:
+                #     pass
+                # elif "english.snd" in content:
+                #     pass
 
     @dingding_monitor
     def remove_repeat_sentence(self):
@@ -81,7 +103,8 @@ class ProcessNews(object):
         :return:
         """
         from work.mylib.lib import big_file_remove_same
-        big_file_remove_same("BBC_news_num_sentence.txt", "BBC_news_num_sentence_temp.txt")
+        big_file_remove_same("chinadaily_news_num_sentence.txt", "chinadaily_news_num_sentence_temp.txt")
+        big_file_remove_same("chinadaily_news_sentence.txt", "chinadaily_news_sentence_temp.txt")
 
     def count(self):
         num = 0
@@ -93,4 +116,5 @@ class ProcessNews(object):
 
 if __name__ == '__main__':
     pn = ProcessNews()
-    pn.count()
+    pn.process_data()
+    pn.same_sentence()
