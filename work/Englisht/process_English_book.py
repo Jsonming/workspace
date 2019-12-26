@@ -34,7 +34,7 @@ class ProcessEnglish(object):
 
     def read_data(self):
         my = MySql()
-        sql = """ select content from spiderframe.text_english_chinadaily_content1;"""
+        sql = """ select content from spiderframe.text_english_chinadaily_travel_content;"""
         return my.get_many(sql)
 
     def contain_word(self, sentence):
@@ -168,11 +168,11 @@ if __name__ == '__main__':
     # input_file = "chinadaily_sentence.txt"
     # output_file = "chinadaily_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
-
+    #
     # input_file = "chinadaily_num_sentence.txt"
     # output_file = "chinadaily_num_sentence_temp.txt"
     # PE.process_diff(input_file, output_file)
-
+    #
     input_file = r"chinadaily_sentence_temp.txt"
     output_file = "chinadaily_sentence_new.txt"
     diff_db = ["corpus_ebook_fingerprint", "corpus_news_fingerprint", "corpus_recording_fingerprint",

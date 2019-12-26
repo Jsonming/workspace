@@ -6,7 +6,7 @@
 # @File    : mysql_my.py
 # @Software: PyCharm
 
-from pymysql.cursors import SSCursor
+from pymysql.cursors import SSCursor, SSDictCursor
 import pymysql.cursors
 
 LIMIT_NUMBER = 2
@@ -38,6 +38,14 @@ class MySql(object):
         while data:
             yield data
             data = self.cursor.fetchmany(LIMIT_NUMBER)
+
+    def get_many_json(self, sql):
+        """
+        get data by json from mysql
+        :return:
+        """
+        self.cursor = self.connect.cursor(cursor=SSDictCursor)
+        yield from self.get_many(sql=sql)
 
 
 class ScrapyRedis():

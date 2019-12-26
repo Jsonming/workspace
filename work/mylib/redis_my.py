@@ -136,4 +136,5 @@ class SSDBCon(object):
 
 if __name__ == '__main__':
     ssdb = SSDBCon()
-    ssdb.insert_to_list("text_english_bbc_link", 'https://www.bbc.com/news/technology-50719426')
+    for i in range(1, 746468):
+        ssdb.insert_to_list("text_thai_dailynews_link", 'https://www.dailynews.co.th/politics/{}'.format(i))

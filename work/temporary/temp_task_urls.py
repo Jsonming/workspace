@@ -8,6 +8,8 @@
 
 # 临时任务urls
 task_urls = [
+    "http://www.mizzimaburmese.com/article/64764",
+    "https://weibo.com/video/aj/second?ajwvr=6&type=icon&second_level_channel_id=4379553112491547&editor_recommend_id=&since_id=4450798420295690&__rnd=1576660394881",
     "https://www.bbc.com/news/business",
 
     "https://en.wikipedia.org/wiki/Help:IPA/Hindi_and_Urdu",

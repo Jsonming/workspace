@@ -38,17 +38,17 @@ class DemoSpider(object):
             _headers = self.headers
 
         response = requests.request("POST", url, data=data, headers=_headers)
-        self.resp = response.text
+        self.resp = response.content.decode("gb2312")
 
     def parse_html(self):
+        # with open("weibo.html", 'a', encoding='gb2312')as f:
+        #     f.write(self.resp)
+
+        print(self.resp)
         html = etree.HTML(self.resp)
-        nodes = html.xpath('//*[@id="orb-modules"]/header/div[2]/div[2]/div[1]/nav/ul//a/@href')
-        for node in nodes:
-            if "http" not in node:
-                url = '"' + "https://www.bbc.com" + node + '",'
-                print(url)
 
     def parse_json(self):
+
         names = []
         response = json.loads(self.resp)
         stores = response.get("stores")
@@ -62,6 +62,7 @@ class DemoSpider(object):
 
         self.crawl_get(url)
         self.parse_html()
+        # self.parse_json()
 
 
 if __name__ == '__main__':
