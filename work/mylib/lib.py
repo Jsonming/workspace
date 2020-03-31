@@ -9,8 +9,8 @@ import re
 import shutil
 import os
 import hashlib
-from polyglot.text import Text
-from unrar import rarfile
+#from polyglot.text import Text
+#from unrar import rarfile
 
 
 def delete_url_link(content):

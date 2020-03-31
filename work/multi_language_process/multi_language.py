@@ -9,10 +9,10 @@ import json
 import re
 import os
 from nltk import tokenize
-from hebrew_tokenizer import tokenize
+# from hebrew_tokenizer import tokenize
 from pythainlp.tokenize import sent_tokenize, word_tokenize
 
-from work.mylib.lib import delete_special_characters, contain_number, delete_extra_spaces
+from work.mylib.lib import delete_special_characters, contain_number, delete_extra_spaces, chinese_sent
 from work.mylib.lib import delete_url_link, delete_brackets_content, delete_brackets, replace_newline_characters
 from work.mylib.mysql_my import MySql
 from work.dingding.dingding_decorator import dingding_monitor
@@ -117,14 +117,36 @@ class MultiLanguage(object):
                                 sentences.add(sent)
                                 s_f.write(sent + "\n")
 
+    def process_chinese(self, content, sent_file, language):
+        """
+        处理中文
+        :param content: 文本内容
+        :param sent_file: 句子文件
+        :param language: 语种
+        :return:
+        """
+        sentences = set()
+        with open(sent_file, 'a', encoding='utf8') as s_f:
+            sents = chinese_sent(content)
+            for sent in sents:
+                if sent:
+                    sentence_length = str(len(sent))
+                    if sent not in sentences:
+                        sentences.add(sent)
+                        s_f.write(sentence_length + "\t" + sent + "\n")
+
     # @dingding_monitor
     def process_data(self, read_file, output_file):
         """
         处理数据
-        :param read_file: 读取本地文件
-        :param sent_file: 句子文件
-        :param num_file: 包含数字的句子文件
-        :return:
+        : param
+        read_file: 读取本地文件
+        :param
+        sent_file: 句子文件
+        :param
+        num_file: 包含数字的句子文件
+        :
+        return:
         """
         with open(read_file, 'r', encoding='utf8') as r_f:
             for line in r_f:
@@ -141,7 +163,8 @@ class MultiLanguage(object):
                 # self.process_thai(content, output_file)  # 处理泰语
                 # self.process_hebrew(content, output_file)  # 处理希伯来语
 
-                self.process_nltk(content, output_file, language)
+                # self.process_nltk(content, output_file, language)
+                self.process_chinese(content, output_file, language)
 
     def count_result(self, file):
         """
@@ -157,7 +180,8 @@ class MultiLanguage(object):
     def thai_split(self, read_file, output_file):
         """
         泰语分词
-        :param file:
+        :param
+        file:
         :return:
         """
         word_set = set()
@@ -173,11 +197,27 @@ class MultiLanguage(object):
     def split_word(self, file, output_file):
         """
         分词
-        :param file:
+        :param
+        file:
         :return:
         """
         self.thai_split(file, output_file)
         self.count_result(output_file)
+
+    def sort_sent(self, file):
+        """
+        排序文件
+        :param file:
+        :return:
+        """
+
+        with open(file, 'r', encoding='utf8') as f:
+            content = [[int(line.split("\t")[0]), line] for line in f.readlines()]
+
+        new_content = sorted(content, key=lambda x: x[0])
+        with open("temp_" + file, 'a', encoding='utf8') as n_f:
+            for item in new_content:
+                n_f.write(item[1])
 
 
 if __name__ == '__main__':
@@ -199,23 +239,31 @@ if __name__ == '__main__':
         # "sweden_aftonbladet_content",
         # "sweden_sydsvenskan_content",
 
-        "Norway_aftenposten_content",
-        "Norway_dagbladet_content",
-        "Norway_dn_content"
+        # "Norway_aftenposten_content",
+        # "Norway_dagbladet_content",
+        # "Norway_dn_content"
+
+        "text_china_ruiwen_content",
+        "text_china_yifan_content",
+        "text_chian_gushi365_content",
+
     ]
 
-    language = tables[0].split("_")[0]
-    temp_file = "{}_data.json".format(language)
-    sentence_file = '{}_sentence.txt'.format(language)
-    word_file = '{}_word.txt'.format(language)
+    # language = tables[0].split("_")[1]
+    # temp_file = "{}_data.json".format(language)
+    # sentence_file = '{}_sentence.txt'.format(language)
+    # word_file = '{}_word.txt'.format(language)
+    #
+    # test_flag = False  # 测试 or 正式
+    #
+    # for table in tables:
+    #     table_name = table.strip()
+    #     ml.output_data(table_name=table_name, file_name=temp_file, test=test_flag)
+    #
+    # ml.process_data(temp_file, sentence_file)
+    # ml.count_result(sentence_file)
 
-    test_flag = True  # 测试 or 正式
+    # ml.split_word(sentence_file, word_file)
+    # os.remove(temp_file)
 
-    for table in tables:
-        table_name = table.strip()
-        ml.output_data(table_name=table_name, file_name=temp_file, test=test_flag)
-
-    ml.process_data(temp_file, sentence_file)
-    ml.count_result(sentence_file)
-    ml.split_word(sentence_file, word_file)
-    os.remove(temp_file)
+    ml.sort_sent("china_sentence.txt")
